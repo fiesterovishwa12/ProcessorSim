@@ -29,7 +29,9 @@ public class ReservationStation {
 		if (total == depth)
 			return false;
 		
-		int dest = next + total;
+		int dest = (next + total -1) % depth;
+		
+		total++;
 		
 		return true;
 	}
@@ -37,6 +39,14 @@ public class ReservationStation {
 	void dispatch ()
 	{
 		// perform dependancy and IAU availability checking, if ready then send
+		if (iau.free)
+		{
+			iau.read(instructBuffer[next][0], instructBuffer[next][1], instructBuffer[next][2], 
+					instructBuffer[next][3]);
+			next++;
+			next = next % depth;
+			total--;
+		}
 	}
 	
 	

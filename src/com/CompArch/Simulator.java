@@ -25,6 +25,8 @@ public class Simulator {
 	
 	// Register array
 	public int[] reg;
+	// Scoreboard for registers
+	public boolean[] scoreboard;
 	
 	// Arithmetic logic unit of the processor
 	private IAU iau;
@@ -96,6 +98,7 @@ public class Simulator {
 		instructMem = new int[100][4];
 		dataMem = new int[200];
 		reg = new int[100];
+		scoreboard = new boolean[100];
 	}
 	
 	// Tick the processor
@@ -209,7 +212,7 @@ public class Simulator {
 			if (reg[r2] + offset > maxMem)
 				maxMem = reg[r2] + offset;
 		}
-	}
+	}	
 	
 	// Run the processor with the current instruction and memory content
 	void run () {
