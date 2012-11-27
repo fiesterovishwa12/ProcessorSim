@@ -30,10 +30,15 @@ public class ReservationStation {
 			return false;
 		
 		int dest = (next + total -1) % depth;
-		
+		instructBuffer[dest] = instruction;
 		total++;
 		
 		return true;
+	}
+	
+	public void tick ()
+	{
+		this.dispatch();
 	}
 	
 	void dispatch ()
