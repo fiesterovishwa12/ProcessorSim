@@ -36,5 +36,12 @@
 Icon?
 ehthumbs.db
 Thumbs.db
+
+# Other files #
+###############
 torun.out
 bin/
+*~
+.project
+.classpath
+.settings/
