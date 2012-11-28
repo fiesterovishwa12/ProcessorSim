@@ -192,10 +192,10 @@ public class Simulator {
 		
 		// IAU instruction
 		else if (instruct[0] <= 16) {
-			result = iau.free;
-			if (result)
-				iau.read(instruct[0], instruct[1], instruct[2], instruct[3]);
-			//result = rs.receive(instruct);
+			//result = iau.free;
+			//if (result)
+				//iau.read(instruct[0], instruct[1], instruct[2], instruct[3]);
+			result = rs.receive(instruct);
 		}
 		else {
 			result = bc.free;
@@ -225,9 +225,9 @@ public class Simulator {
 	
 	// Run the processor with the current instruction and memory content
 	void run () {
-		while (instructMem[PC][0] != 0 || /*!rs.isFree()*/ !iau.free || !bc.free) {
+		while (instructMem[PC][0] != 0 || !rs.isFree() /* !iau.free */|| !bc.free) {
 			boolean next = false;
-			if (/*rs.isFree()*/ iau.free && bc.free)
+			if (rs.isFree()/* iau.free*/ && bc.free)
 				next = fetch(instructMem[PC]);
 			tick();
 			if (next)

@@ -35,15 +35,20 @@ public class ReservationStation {
 	public boolean receive (int[] instruction)
 	{
 		if (total == depth)
+		{
+			System.out.println("REJECT");
 			return false;
+		}
 		
-		int dest = (next + total) % depth;
-		System.out.println("--");
-		System.out.println(next + " " + total + " " + depth);
-		System.out.println((next + total) % depth);
-		System.out.println("--");
-		instructBuffer[dest] = instruction;
 		total++;
+		
+		int dest = (next + total - 1) % depth;
+		/*System.out.println("--");
+		System.out.println(next + " " + total + " " + depth);
+		System.out.println((next + total - 1) % depth);
+		System.out.println("--");*/
+		instructBuffer[dest] = instruction;
+		
 		
 		return true;
 	}
@@ -51,19 +56,25 @@ public class ReservationStation {
 	public void tick ()
 	{
 		this.dispatch();
+		iau.tick();
 	}
 	
 	void dispatch ()
 	{
 		// perform dependancy and IAU availability checking, if ready then send
-		if (iau.free)
+		if (iau.free && total > 0)
 		{
+			/*System.out.println("WORKING: " + total);
+			System.out.println("running: " + instructBuffer[next][0] + " " + instructBuffer[next][1]
+					+ " " + instructBuffer[next][2] + " " + instructBuffer[next][3]);*/
+			
 			iau.read(instructBuffer[next][0], instructBuffer[next][1], instructBuffer[next][2], 
 					instructBuffer[next][3]);
 			next++;
 			next = next % depth;
 			total--;
 		}
+			
 	}
 	
 	
