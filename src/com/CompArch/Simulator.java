@@ -175,8 +175,12 @@ public class Simulator {
 	boolean fetch(int[] instruct) {
 		boolean result;
 		
-		if (instruct[1] > maxReg && instruct[0] != 19)
+		// Log the maximum written to register
+		if (instruct[1] > maxReg && instruct[0] != 0 && instruct[0] != 19)
 			maxReg = instruct[1];
+		
+		if (instruct[0] != 0 && instruct[0] != 19)
+			regFile.issue(instruct[1]);
 		
 		// Memory load
 		if (instruct[0] <= 2)

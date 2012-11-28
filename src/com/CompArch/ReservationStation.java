@@ -36,7 +36,6 @@ public class ReservationStation {
 	{
 		if (total == depth)
 		{
-			System.out.println("REJECT");
 			return false;
 		}
 		
