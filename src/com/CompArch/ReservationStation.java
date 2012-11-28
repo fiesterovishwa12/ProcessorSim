@@ -61,6 +61,7 @@ public class ReservationStation {
 	void dispatch ()
 	{
 		// perform dependancy and IAU availability checking, if ready then send
+		
 		if (iau.free && total > 0)
 		{
 			/*System.out.println("WORKING: " + total);

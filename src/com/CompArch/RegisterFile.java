@@ -14,6 +14,8 @@ public class RegisterFile {
 	{
 		reg = new int[size];
 		scoreboard = new boolean[size];
+		for (int i = 0; i < size; i++)
+			scoreboard[i] = true;
 	}
 	
 	// Set the register at index i to val
