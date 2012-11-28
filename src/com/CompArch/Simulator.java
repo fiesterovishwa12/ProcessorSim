@@ -28,6 +28,9 @@ public class Simulator {
 	// Arithmetic logic unit of the processor
 	private IAU iau;
 	
+	// Reservation station
+	private ReservationStation rs;
+	
 	// Branch controller of the processor
 	private BranchController bc;
 	
@@ -88,6 +91,7 @@ public class Simulator {
 	Simulator (int registers, int instructions, int dataSize){
 		// Set up components
 		iau = new IAU(this);
+		rs = new ReservationStation(this, 4);
 		bc = new BranchController(this);
 		
 		// Set up registers
@@ -102,6 +106,7 @@ public class Simulator {
 	void tick () {
 		cycleTotal++;
 		iau.tick();
+		rs.tick();
 		bc.tick();
 	}
 	
@@ -190,6 +195,7 @@ public class Simulator {
 			result = iau.free;
 			if (result)
 				iau.read(instruct[0], instruct[1], instruct[2], instruct[3]);
+			//result = rs.receive(instruct);
 		}
 		else {
 			result = bc.free;
@@ -219,9 +225,9 @@ public class Simulator {
 	
 	// Run the processor with the current instruction and memory content
 	void run () {
-		while (instructMem[PC][0] != 0 || !iau.free || !bc.free) {
+		while (instructMem[PC][0] != 0 || /*!rs.isFree()*/ !iau.free || !bc.free) {
 			boolean next = false;
-			if (iau.free && bc.free)
+			if (/*rs.isFree()*/ iau.free && bc.free)
 				next = fetch(instructMem[PC]);
 			tick();
 			if (next)

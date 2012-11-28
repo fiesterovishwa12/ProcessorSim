@@ -13,6 +13,14 @@ public class ReservationStation {
 	
 	// Instruction memory section
 	public int[][]instructBuffer;
+	
+	public boolean isFree ()
+	{
+		if (total > 0)
+			return false;
+		else
+			return true;
+	}
 
 	public ReservationStation (Simulator s, int size)
 	{
@@ -29,7 +37,11 @@ public class ReservationStation {
 		if (total == depth)
 			return false;
 		
-		int dest = (next + total -1) % depth;
+		int dest = (next + total) % depth;
+		System.out.println("--");
+		System.out.println(next + " " + total + " " + depth);
+		System.out.println((next + total) % depth);
+		System.out.println("--");
 		instructBuffer[dest] = instruction;
 		total++;
 		
