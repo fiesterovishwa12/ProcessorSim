@@ -25,9 +25,6 @@ public class Simulator {
 	
 	public RegisterFile regFile;
 	
-	// Arithmetic logic unit of the processor
-	private IAU iau;
-	
 	// Reservation station
 	private ReservationStation rs;
 	
@@ -90,7 +87,6 @@ public class Simulator {
 	
 	Simulator (int registers, int instructions, int dataSize){
 		// Set up components
-		iau = new IAU(this);
 		rs = new ReservationStation(this, 4);
 		bc = new BranchController(this);
 		
@@ -105,7 +101,6 @@ public class Simulator {
 	// Tick the processor
 	void tick () {
 		cycleTotal++;
-		iau.tick();
 		rs.tick();
 		bc.tick();
 	}
