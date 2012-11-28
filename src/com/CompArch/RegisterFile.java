@@ -5,6 +5,7 @@ package com.CompArch;
 public class RegisterFile {
 	// Register array
 	int[] reg;
+	int maxReg = 0;
 	
 	// Scoreboard for registers
 	boolean[] scoreboard;
@@ -20,6 +21,8 @@ public class RegisterFile {
 	{
 		scoreboard[i] = true;
 		reg[i] = val;
+		if (maxReg < i)
+			maxReg = i;
 	}
 	
 	public void issue(int i)
@@ -35,6 +38,13 @@ public class RegisterFile {
 	public boolean isFree(int i)
 	{
 		return scoreboard[i];
+	}
+	
+	void printReg () {
+		for (int i = 0; i <= maxReg; i++)
+		{
+			System.out.println(reg[i]);
+		}
 	}
 	
 }
