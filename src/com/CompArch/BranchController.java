@@ -31,13 +31,13 @@ public class BranchController {
 		// Calculate the result based on the command number
 		switch (instruct) {
 		case 17:
-			if (sim.reg[r1] == sim.reg[r2]) {
+			if (sim.regFile.get(r1) == sim.regFile.get(r2)) {
 				free = false;
 				out = sim.PC + r3;
 			}
 			break;
 		case 18:
-			if (sim.reg[r1] != sim.reg[r2]) {
+			if (sim.regFile.get(r1) != sim.regFile.get(r2)) {
 				free = false;
 				out = sim.PC + r3;
 			}

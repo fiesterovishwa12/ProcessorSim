@@ -23,10 +23,7 @@ public class Simulator {
 	// Data memory section
 	public int[] dataMem;
 	
-	// Register array
-	public int[] reg;
-	// Scoreboard for registers
-	public boolean[] scoreboard;
+	public RegisterFile regFile;
 	
 	// Arithmetic logic unit of the processor
 	private IAU iau;
@@ -38,7 +35,7 @@ public class Simulator {
 		System.out.println("Launching simulator");
 		System.out.println("Running program");
 
-		Simulator sim = new Simulator();
+		Simulator sim = new Simulator(100,100,200);
 
 		File file = new File(args[0]);
 
@@ -88,17 +85,17 @@ public class Simulator {
 		System.out.print("Total cycles: " + sim.cycleTotal);
 	}
 	
-	Simulator (){
+	Simulator (int registers, int instructions, int dataSize){
 		// Set up components
 		iau = new IAU(this);
 		bc = new BranchController(this);
 		
 		// Set up registers
 		PC = 0;
-		instructMem = new int[100][4];
-		dataMem = new int[200];
-		reg = new int[100];
-		scoreboard = new boolean[100];
+		instructMem = new int[instructions][4];
+		dataMem = new int[dataSize];
+		
+		regFile = new RegisterFile(registers);
 	}
 	
 	// Tick the processor
@@ -165,10 +162,13 @@ public class Simulator {
 	}
 	
 	void printReg () {
+		regFile.printReg();
+		/*
 		for (int i = 0; i <= maxReg; i++)
 		{
 			System.out.println(reg[i]);
 		}
+		*/
 	}
 	
 	// Fetch decode and execute an instruction, returns true if instruction executed, otherwise false
@@ -205,12 +205,15 @@ public class Simulator {
 	{
 		// Increment the clock for the memory access (cost - 1)
 		cycleTotal += 3;
-		if (instruct == 1)
-			reg[r1] = dataMem[reg[r2] + offset];
+		if (instruct == 1){
+			//reg[r1] = dataMem[reg[r2] + offset];
+			regFile.set(r1, dataMem[regFile.get(r2) + offset]);
+		}
 		else if (instruct == 2){
-			dataMem[reg[r2] + offset] = reg[r1];
-			if (reg[r2] + offset > maxMem)
-				maxMem = reg[r2] + offset;
+			//dataMem[reg[r2] + offset] = reg[r1];
+			dataMem[regFile.get(r2) + offset] = regFile.get(r1);
+			if (regFile.get(r2) + offset > maxMem)
+				maxMem = regFile.get(r2) + offset;
 		}
 	}	
 	
