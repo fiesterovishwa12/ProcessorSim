@@ -31,6 +31,10 @@ public class Simulator {
 	// Branch controller of the processor
 	private BranchController bc;
 	
+	// Reorder buffer
+	
+	private ReorderBuffer rob;
+	
 	public static void main(String[] args) {
 		System.out.println("Launching simulator");
 		System.out.println("Running program");
@@ -99,6 +103,8 @@ public class Simulator {
 		dataMem = new int[dataSize];
 		
 		regFile = new RegisterFile(registers);
+		
+		rob = new ReorderBuffer(this, 4*rsNum);
 	}
 	
 	// Tick the processor

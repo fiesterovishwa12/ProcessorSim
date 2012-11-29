@@ -10,7 +10,7 @@ public class ReorderBuffer {
 	private int total;
 	private Simulator sim;
 
-	ReorderBuffer (int length, Simulator s)
+	ReorderBuffer (Simulator s, int length)
 	{
 		sim = s;
 		pos = 0;
