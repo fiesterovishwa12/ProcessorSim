@@ -112,8 +112,8 @@ public class Simulator {
 		cycleTotal++;
 		for (int i = 0; i < rs.length; i++)
 			rs[i].tick();
-		
 		bc.tick();
+		rob.tick();
 	}
 	
 	// Load values from file to instruction memory

@@ -27,14 +27,15 @@ public class IAU {
 	}
 	
 	// Calculate the given command
-	public void read (int instruct, int r1, int r2, int r3)
+	public void read (int instruct, int r1, int r2, int r3, int d)
 	{
 		if (!free) {
 			System.out.println("Cannot execute instruction" + instruct + " "
 					+ r1 + " " + r2 + " " + r3 + ", busy");
 			return;
 		}
-		dest = r1;
+		dest = d;
+		//dest = r1;
 		free = false;
 		// Calculate the result based on the command number
 		switch (instruct) {
@@ -124,7 +125,8 @@ public class IAU {
 		cycles--;
 		
 		if (cycles == 0) {
-			sim.regFile.set(dest, out);
+			sim.rob.setResult(dest, out);
+			//sim.regFile.set(dest, out);
 			free = true;
 		}
 	}

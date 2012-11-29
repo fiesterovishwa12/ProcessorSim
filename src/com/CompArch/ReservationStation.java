@@ -75,7 +75,7 @@ public class ReservationStation {
 					+ " " + instructBuffer[next][2] + " " + instructBuffer[next][3]);*/
 			
 			iau.read(instructBuffer[next][0], instructBuffer[next][1], instructBuffer[next][2], 
-					instructBuffer[next][3]);
+					instructBuffer[next][3], robLoc[next]);
 			next++;
 			next = next % depth;
 			total--;
