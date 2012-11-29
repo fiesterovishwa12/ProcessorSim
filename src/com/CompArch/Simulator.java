@@ -227,24 +227,34 @@ public class Simulator {
 		}
 	}	
 	
+	// Are reservation stations free?
+	
+	boolean isRsFree()
+	{
+		boolean result = true;
+		for (int i = 0; i < rs.length; i++)
+		{
+			if (!rs[i].isFree())
+				result = false;
+		}
+		return result;
+	}
+	
 	// Run the processor with the current instruction and memory content
 	void run () {
 		
 		// check if any reservation stations are free
-		boolean rsFree = true;
-		for (int i = 0; i < rs.length; i++)
-		{
-			if (!rs[i].isFree())
-				rsFree = false;
-		}
+		boolean rsFree = isRsFree();
 		
 		while (instructMem[PC][0] != 0 || !rsFree /* !iau.free */|| !bc.free) {
 			boolean next = false;
 			if (rsFree/* iau.free*/ && bc.free)
 				next = fetch(instructMem[PC]);
 			tick();
+			rsFree = isRsFree();
 			if (next)
 				PC++;
 		}
+		System.out.println("Halting " + rs[0].isFree());
 	}
 }
