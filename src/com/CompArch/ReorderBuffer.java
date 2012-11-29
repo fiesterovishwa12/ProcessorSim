@@ -8,9 +8,11 @@ public class ReorderBuffer {
 	private int size;
 	private int pos;
 	private int total;
+	private Simulator sim;
 
-	ReorderBuffer (int length)
+	ReorderBuffer (int length, Simulator s)
 	{
+		sim = s;
 		pos = 0;
 		total = 0;
 		size = length;
@@ -22,7 +24,13 @@ public class ReorderBuffer {
 			valid[i] = false;
 	}
 	
-	int add (int[] instruction)
+	void setResult (int index, int val)
+	{
+		result[index] = val;
+		valid[index] = true;
+	}
+	
+	int insert (int[] instruction)
 	{
 		int writeTo = (pos + total) % size;
 		instruct[writeTo] = instruction[0];
@@ -33,8 +41,21 @@ public class ReorderBuffer {
 		else
 			dest[writeTo] = instruction[1];
 		
+		valid[writeTo] = false;
+		
 		total++;
 		
 		return writeTo;
+	}
+	
+	void tick()
+	{
+		//Check if current instruction is valid, if so then write it and move on to the next
+		if (valid[pos] && total > 0)
+		{
+			sim.regFile.set(dest[pos], result[pos]);
+			total--;
+			pos++;
+		}
 	}
 }
