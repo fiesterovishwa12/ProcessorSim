@@ -25,8 +25,8 @@ public class Simulator {
 	
 	public RegisterFile regFile;
 	
-	// Reservation station
-	private ReservationStation rs;
+	// Reservation station array
+	private ReservationStation rs[];
 	
 	// Branch controller of the processor
 	private BranchController bc;
@@ -35,7 +35,7 @@ public class Simulator {
 		System.out.println("Launching simulator");
 		System.out.println("Running program");
 
-		Simulator sim = new Simulator(100,100,200);
+		Simulator sim = new Simulator(100,100,200,2);
 
 		File file = new File(args[0]);
 
@@ -85,9 +85,12 @@ public class Simulator {
 		System.out.print("Total cycles: " + sim.cycleTotal);
 	}
 	
-	Simulator (int registers, int instructions, int dataSize){
+	Simulator (int registers, int instructions, int dataSize, int rsNum){
 		// Set up components
-		rs = new ReservationStation(this, 4);
+		rs = new ReservationStation[rsNum];
+		for (int i = 0; i < rsNum; i++)
+			rs[i] = new ReservationStation(this, 4);
+		
 		bc = new BranchController(this);
 		
 		// Set up registers
@@ -101,7 +104,9 @@ public class Simulator {
 	// Tick the processor
 	void tick () {
 		cycleTotal++;
-		rs.tick();
+		for (int i = 0; i < rs.length; i++)
+			rs[i].tick();
+		
 		bc.tick();
 	}
 	
@@ -194,7 +199,7 @@ public class Simulator {
 			//result = iau.free;
 			//if (result)
 				//iau.read(instruct[0], instruct[1], instruct[2], instruct[3]);
-			result = rs.receive(instruct);
+			result = rs[0].receive(instruct);
 		}
 		else {
 			result = bc.free;
@@ -224,9 +229,18 @@ public class Simulator {
 	
 	// Run the processor with the current instruction and memory content
 	void run () {
-		while (instructMem[PC][0] != 0 || !rs.isFree() /* !iau.free */|| !bc.free) {
+		
+		// check if any reservation stations are free
+		boolean rsFree = true;
+		for (int i = 0; i < rs.length; i++)
+		{
+			if (!rs[i].isFree())
+				rsFree = false;
+		}
+		
+		while (instructMem[PC][0] != 0 || !rsFree /* !iau.free */|| !bc.free) {
 			boolean next = false;
-			if (rs.isFree()/* iau.free*/ && bc.free)
+			if (rsFree/* iau.free*/ && bc.free)
 				next = fetch(instructMem[PC]);
 			tick();
 			if (next)

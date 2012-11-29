@@ -16,7 +16,7 @@ public class ReservationStation {
 	
 	public boolean isFree ()
 	{
-		if (total > 0)
+		if (total > 0 || !iau.free)
 			return false;
 		else
 			return true;
