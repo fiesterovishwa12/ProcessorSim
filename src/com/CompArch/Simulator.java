@@ -33,7 +33,7 @@ public class Simulator {
 	
 	// Reorder buffer
 	
-	private ReorderBuffer rob;
+	public ReorderBuffer rob;
 	
 	public static void main(String[] args) {
 		System.out.println("Launching simulator");

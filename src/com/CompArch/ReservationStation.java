@@ -2,17 +2,20 @@ package com.CompArch;
 
 public class ReservationStation {
 
-	Simulator sim;
-	IAU iau;
+	private Simulator sim;
+	private IAU iau;
 	
-	int depth;
+	private int depth;
 	
 	// Location in the 
-	int next;
-	int total;
+	private int next;
+	private int total;
 	
 	// Instruction memory section
-	public int[][]instructBuffer;
+	private int[][]instructBuffer;
+	
+	// Location of each instruction in the reorder buffer
+	private int robLoc[];
 	
 	public boolean isFree ()
 	{
@@ -28,7 +31,9 @@ public class ReservationStation {
 		next = 0;
 		total = 0;
 		instructBuffer = new int[size][4];
+		robLoc = new int[size];
 		iau = new IAU(s);
+		sim = s;
 	}
 	
 	// Takes instruction, returns true if added to buffer, false if buffer full
@@ -48,6 +53,7 @@ public class ReservationStation {
 		System.out.println("--");*/
 		instructBuffer[dest] = instruction;
 		
+		robLoc[dest] = sim.rob.insert(instruction);
 		
 		return true;
 	}

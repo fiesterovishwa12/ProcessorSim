@@ -6,15 +6,15 @@ public class ReorderBuffer {
 	private int result[];
 	private boolean valid[];
 	private int size;
-	private int pos;
-	private int total;
+	private int head;
+	private int tail;
 	private Simulator sim;
 
 	ReorderBuffer (Simulator s, int length)
 	{
 		sim = s;
-		pos = 0;
-		total = 0;
+		head = 0;
+		tail = 0;
 		size = length;
 		instruct = new int [length];
 		dest = new int [length];
@@ -32,30 +32,34 @@ public class ReorderBuffer {
 	
 	int insert (int[] instruction)
 	{
-		int writeTo = (pos + total) % size;
-		instruct[writeTo] = instruction[0];
+		instruct[head] = instruction[0];
 		
 		// Dest if branch operation
 		if (instruction[0] == 17 | instruction[0] == 18)
-			dest[writeTo] = instruction[3];
+			dest[head] = instruction[3];
 		else
-			dest[writeTo] = instruction[1];
+			dest[head] = instruction[1];
+				
+		int result = head;
 		
-		valid[writeTo] = false;
+		head++;
 		
-		total++;
+		if (head >= size)
+			head = 0;
 		
-		return writeTo;
+		return result;
 	}
 	
 	void tick()
 	{
 		//Check if current instruction is valid, if so then write it and move on to the next
-		if (valid[pos] && total > 0)
+		if (valid[tail])
 		{
-			sim.regFile.set(dest[pos], result[pos]);
-			total--;
-			pos++;
+			sim.regFile.set(dest[tail], result[tail]);
+			valid[tail] = false;
+			tail++;
+			if (tail >= size)
+				tail = 0;
 		}
 	}
 }
