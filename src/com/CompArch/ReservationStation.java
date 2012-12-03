@@ -53,7 +53,8 @@ public class ReservationStation {
 		}
 		
 		/* Get the register values if needed*/
-		int toReserve[] = instruction;
+		int toReserve[] = new int[4];
+		toReserve[0] = instruction[0];
 		
 		// Check if instruction is an overwrite
 		boolean isWrite = instruction[0] == 1;
@@ -65,12 +66,25 @@ public class ReservationStation {
 		if (isWrite || isWipe)
 		{
 			overWrite = sim.rrt.getReg(instruction[1]);
+			sim.rrt.newReg(sim.rrt.getReg(instruction[1]));
 		}
 		
 		if (instruction[0] > 0 && instruction[0] < 19)
 		{
-			//toReserve[1] = sim.rrt.getReg(instruction[1]);
+			toReserve[1] = sim.rrt.getReg(instruction[1]);
+			toReserve[2] = sim.rrt.getReg(instruction[2]);
 		}
+		
+		boolean thirdReg = instruction[0] > 3 && instruction[0] < 9;
+		thirdReg = thirdReg || instruction[0] == 10 || instruction[0] == 12  
+				|| instruction[0] == 15; 
+		
+		if (thirdReg)
+		{
+			toReserve[3] = sim.rrt.getReg(instruction[3]);
+		}
+		else
+			toReserve[3] = instruction[3];
 		
 		total++;
 		

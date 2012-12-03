@@ -1,6 +1,7 @@
 package com.CompArch;
 
 public class RegisterRenameTable {
+	// the physical register the given register will map to
 	private int rename[];
 	private boolean available[];
 	
@@ -17,6 +18,9 @@ public class RegisterRenameTable {
 	// returns -1 if no registers are available for renaming
 	int newReg (int in)
 	{
+		if (in < 0)
+			return -1;
+		
 		for (int i = 0; i < available.length; i++)
 		{
 			if (available[i]) 
