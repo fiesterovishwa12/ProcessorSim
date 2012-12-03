@@ -32,8 +32,10 @@ public class Simulator {
 	private BranchController bc;
 	
 	// Reorder buffer
-	
 	public ReorderBuffer rob;
+	
+	// Register Renaming Table
+	public RegisterRenameTable rrt;
 	
 	public static void main(String[] args) {
 		System.out.println("Launching simulator");
@@ -97,12 +99,16 @@ public class Simulator {
 		
 		bc = new BranchController(this);
 		
+	
 		// Set up registers
 		PC = 0;
 		instructMem = new int[instructions][4];
 		dataMem = new int[dataSize];
 		
 		regFile = new RegisterFile(registers);
+		
+		//TODO make rrt smaller than registers
+		rrt = new RegisterRenameTable(registers);
 		
 		rob = new ReorderBuffer(this, 4*rsNum);
 	}

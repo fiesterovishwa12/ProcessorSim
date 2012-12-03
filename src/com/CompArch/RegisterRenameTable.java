@@ -7,6 +7,11 @@ public class RegisterRenameTable {
 	public RegisterRenameTable(int size) {
 		rename = new int[size];
 		available = new boolean[size];
+		for (int i = 0; i<size; i++)
+		{
+			rename[i] = -1;
+			available[i] = true;
+		}
 	}
 	
 	// returns -1 if no registers are available for renaming
@@ -26,7 +31,10 @@ public class RegisterRenameTable {
 	
 	int getReg (int in)
 	{
-		return rename[in];
+		if( rename[in] >= 0)
+			return rename[in];
+		// otherwise it is a new register and so is assigned as such
+		return newReg(in);
 	}
 	
 	void free (int r)

@@ -99,8 +99,8 @@ public class ReservationStation {
 	void dispatch ()
 	{
 		// perform dependancy and IAU availability checking, if ready then send
-		System.out.println(instructBuffer[next][0] + " " + instructBuffer[next][1] + " " + 
-				instructBuffer[next][2] + " " + instructBuffer[next][3]);
+		/*System.out.println(instructBuffer[next][0] + " " + instructBuffer[next][1] + " " + 
+				instructBuffer[next][2] + " " + instructBuffer[next][3]);*/
 		boolean depends = false;
 		
 		/*
@@ -122,7 +122,7 @@ public class ReservationStation {
 		
 		if (iau.free && total > 0 && !depends)
 		{
-			System.out.println(instructBuffer[next][2] + " " + instructBuffer[next][3] + " FREE");
+			//System.out.println(instructBuffer[next][2] + " " + instructBuffer[next][3] + " FREE");
 			/*System.out.println("WORKING: " + total);
 			System.out.println("running: " + instructBuffer[next][0] + " " + instructBuffer[next][1]
 					+ " " + instructBuffer[next][2] + " " + instructBuffer[next][3]);*/
@@ -134,7 +134,7 @@ public class ReservationStation {
 			total--;
 		}
 		
-		System.out.println("---");
+		//System.out.println("---");
 			
 	}
 	
