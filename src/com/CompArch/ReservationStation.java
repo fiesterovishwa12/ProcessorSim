@@ -69,7 +69,7 @@ public class ReservationStation {
 		
 		if (instruction[0] > 0 && instruction[0] < 19)
 		{
-			toReserve[1] = sim.rrt.getReg(instruction[1]);
+			//toReserve[1] = sim.rrt.getReg(instruction[1]);
 		}
 		
 		total++;
