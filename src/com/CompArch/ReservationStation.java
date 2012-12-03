@@ -52,40 +52,6 @@ public class ReservationStation {
 			return false;
 		}
 		
-		/* Get the register values if needed*/
-		int toReserve[] = new int[4];
-		toReserve[0] = instruction[0];
-		
-		// Check if instruction is an overwrite
-		boolean isWrite = instruction[0] == 1;
-		boolean isWipe = instruction[0] == 5 && instruction[1] == instruction[2] 
-				&& instruction[2] == instruction[3]; 
-		
-		int overWrite = -1;
-		
-		if (isWrite || isWipe)
-		{
-			overWrite = sim.rrt.getReg(instruction[1]);
-			sim.rrt.newReg(sim.rrt.getReg(instruction[1]));
-		}
-		
-		if (instruction[0] > 0 && instruction[0] < 19)
-		{
-			toReserve[1] = sim.rrt.getReg(instruction[1]);
-			toReserve[2] = sim.rrt.getReg(instruction[2]);
-		}
-		
-		boolean thirdReg = instruction[0] > 3 && instruction[0] < 9;
-		thirdReg = thirdReg || instruction[0] == 10 || instruction[0] == 12  
-				|| instruction[0] == 15; 
-		
-		if (thirdReg)
-		{
-			toReserve[3] = sim.rrt.getReg(instruction[3]);
-		}
-		else
-			toReserve[3] = instruction[3];
-		
 		total++;
 		
 		int dest = (next + total - 1) % depth;
@@ -95,6 +61,17 @@ public class ReservationStation {
 		System.out.println("--");*/
 		
 		instructBuffer[dest] = instruction;
+		
+		boolean isWipe = instruction[0] == 5 && instruction[1] == instruction[2] 
+				&& instruction[2] == instruction[3]; 
+		
+		int overWrite = -1;
+		
+		if (isWipe)
+		{
+			overWrite = sim.rrt.getReg(instruction[1]);
+			sim.rrt.newReg(sim.rrt.getReg(instruction[1]));
+		}
 		
 		// Add instruction to the reorder buffer
 		robLoc[dest] = sim.rob.insert(instruction, overWrite);

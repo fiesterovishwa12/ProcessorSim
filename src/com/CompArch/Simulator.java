@@ -188,6 +188,44 @@ public class Simulator {
 		*/
 	}
 	
+	int[] regRename (int instruction[])
+	{
+		/* Get the register values if needed*/
+		int toReserve[] = new int[4];
+		toReserve[0] = instruction[0];
+		
+		// Check if instruction is an overwrite
+		boolean isWrite = instruction[0] == 1;
+		boolean isWipe = instruction[0] == 5 && instruction[1] == instruction[2] 
+				&& instruction[2] == instruction[3]; 
+		
+		int overWrite = -1;
+		
+		if (isWrite || isWipe)
+		{
+//TODO
+		}
+		
+		if (instruction[0] > 0 && instruction[0] < 19)
+		{
+			toReserve[1] = rrt.getReg(instruction[1]);
+			toReserve[2] = rrt.getReg(instruction[2]);
+		}
+		
+		boolean thirdReg = instruction[0] > 3 && instruction[0] < 9;
+		thirdReg = thirdReg || instruction[0] == 10 || instruction[0] == 12  
+				|| instruction[0] == 15; 
+		
+		if (thirdReg)
+		{
+			toReserve[3] = rrt.getReg(instruction[3]);
+		}
+		else
+			toReserve[3] = instruction[3];
+		
+		return toReserve;
+	}
+	
 	// Fetch decode and execute an instruction, returns true if instruction executed, otherwise false
 	boolean fetch(int[] instruct) {
 		boolean result;
@@ -200,7 +238,7 @@ public class Simulator {
 		if (instruct[0] <= 2)
 		{
 			result = true;
-			mem(instruct[0], instruct[1], instruct[2], instruct[3]);
+			mem(instruct);
 		}
 		
 		// IAU instructions - TODO currently all sent to one RS
@@ -220,20 +258,31 @@ public class Simulator {
 	}
 	
 	// Handles memory loads and writes
-	void mem(int instruct, int r1, int r2, int offset)
+	void mem(int[] instruct)
 	{
+		// is op an overwrite?
+		int overWrite = -1;
+		if (instruct[0] == 1)
+		{
+			overWrite = rrt.getReg(instruct[1]);
+			rrt.newReg(rrt.getReg(instruct[1]));
+		}
+		
+		int robIndex = rob.insert(instruct, overWrite);
+		
 		// Increment the clock for the memory access (cost - 1)
 		cycleTotal += 3;
-		if (instruct == 1){
-			//reg[r1] = dataMem[reg[r2] + offset];
-			regFile.set(r1, dataMem[regFile.get(r2) + offset]);
+		if (instruct[0] == 1){
+			regFile.set(instruct[1], dataMem[regFile.get(instruct[2]) + instruct[3]]);
 		}
-		else if (instruct == 2){
-			//dataMem[reg[r2] + offset] = reg[r1];
-			dataMem[regFile.get(r2) + offset] = regFile.get(r1);
-			if (regFile.get(r2) + offset > maxMem)
-				maxMem = regFile.get(r2) + offset;
+		else if (instruct[0] == 2){
+			dataMem[regFile.get(instruct[2]) + instruct[3]] = regFile.get(instruct[1]);
+			// Increment max mem
+			if (regFile.get(instruct[2]) + instruct[3] > maxMem)
+				maxMem = regFile.get(instruct[2]) + instruct[3];
 		}
+		
+		rob.setResult(robIndex, 0);
 	}	
 	
 	// Are reservation stations free?
