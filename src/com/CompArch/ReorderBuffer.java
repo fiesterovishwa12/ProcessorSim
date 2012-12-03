@@ -5,6 +5,8 @@ public class ReorderBuffer {
 	private int dest[];
 	private int result[];
 	private boolean valid[];
+	// Logs if instruction is over writing a particular register's value (for register renaming)
+	private int overWrite[];
 	private int size;
 	private int head;
 	private int tail;
@@ -20,8 +22,12 @@ public class ReorderBuffer {
 		dest = new int [length];
 		result = new int [length];
 		valid = new boolean [length];
+		overWrite = new int [length];
 		for (int i = 0; i < length; i++)
+		{
 			valid[i] = false;
+			overWrite[i] = -1;
+		}
 	}
 	
 	void setResult (int index, int val)
@@ -30,6 +36,7 @@ public class ReorderBuffer {
 		valid[index] = true;
 	}
 	
+	// insert an instruction into the reorder buffer
 	int insert (int[] instruction)
 	{
 		instruct[head] = instruction[0];

@@ -41,7 +41,7 @@ public class Simulator {
 		System.out.println("Launching simulator");
 		System.out.println("Running program");
 
-		Simulator sim = new Simulator(100,100,200,2);
+		Simulator sim = new Simulator(100,100,200,1);
 
 		File file = new File(args[0]);
 
@@ -203,7 +203,7 @@ public class Simulator {
 			mem(instruct[0], instruct[1], instruct[2], instruct[3]);
 		}
 		
-		// IAU instruction
+		// IAU instructions - TODO currently all sent to one RS
 		else if (instruct[0] <= 16) {
 			//result = iau.free;
 			//if (result)
