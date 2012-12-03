@@ -36,10 +36,12 @@ public class ReorderBuffer {
 		valid[index] = true;
 	}
 	
-	// insert an instruction into the reorder buffer
-	int insert (int[] instruction)
+	// insert an instruction into the reorder buffer, along with the register it is overwriting
+	int insert (int[] instruction, int over)
 	{
 		instruct[head] = instruction[0];
+		
+		overWrite[head] = over;
 		
 		// Dest if branch operation
 		if (instruction[0] == 17 | instruction[0] == 18)
@@ -63,6 +65,7 @@ public class ReorderBuffer {
 		if (valid[tail])
 		{
 			sim.regFile.set(dest[tail], result[tail]);
+			sim.rrt.free(overWrite[tail]);
 			valid[tail] = false;
 			tail++;
 			if (tail >= size)
