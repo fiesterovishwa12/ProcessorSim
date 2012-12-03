@@ -12,10 +12,13 @@ public class ReservationStation {
 	private int total;
 	
 	// Instruction memory section
-	private int[][]instructBuffer;
+	private int[][] instructBuffer;
 	
 	// Location of each instruction in the reorder buffer
 	private int robLoc[];
+	
+	// Whether inputs are available
+	private boolean[][] available;
 	
 	public boolean isFree ()
 	{
@@ -33,6 +36,11 @@ public class ReservationStation {
 		instructBuffer = new int[size][4];
 		robLoc = new int[size];
 		iau = new IAU(s);
+		available = new boolean[size][2];
+		for (int i = 0; i < size; i++) {
+			available[i][0] = false;
+			available[i][1] = false;
+		}
 		sim = s;
 	}
 	
@@ -55,6 +63,30 @@ public class ReservationStation {
 		
 		robLoc[dest] = sim.rob.insert(instruction);
 		
+		// Get available operands
+		/*
+		if (sim.regFile.isFree(instruction[2]))
+		{
+			instructBuffer[dest][2] = sim.regFile.get(instruction[2]);
+			available[dest][0] = true;
+		}
+		
+		int in = instruction[0];
+		
+		if (in != 3 && in != 9 && in != 11 && in != 13 && in != 14 && in != 16)
+		{
+			if (sim.regFile.isFree(instruction[3]))
+			{
+				instructBuffer[dest][3] = sim.regFile.get(instruction[3]);
+				available[dest][1] = true;
+			}
+		}
+		
+		if (in != 0 && in != 19)
+		{
+			//Mark as issued
+		}
+		*/
 		return true;
 	}
 	
@@ -67,9 +99,30 @@ public class ReservationStation {
 	void dispatch ()
 	{
 		// perform dependancy and IAU availability checking, if ready then send
+		System.out.println(instructBuffer[next][0] + " " + instructBuffer[next][1] + " " + 
+				instructBuffer[next][2] + " " + instructBuffer[next][3]);
+		boolean depends = false;
 		
-		if (iau.free && total > 0)
+		/*
+		if (!sim.regFile.isFree(instructBuffer[next][2]))
 		{
+			depends = true;
+			System.out.println(instructBuffer[next][2] + " NOT FREE1");
+		}
+		int in = instructBuffer[next][0];
+		if (in != 3 && in != 9 && in != 11 && in != 13 && in != 14 && in != 16)
+		{
+			if (!sim.regFile.isFree(instructBuffer[next][3]))
+			{
+				depends = true;
+				System.out.println(instructBuffer[next][3] + " NOT FREE2");
+			}
+		}
+		depends = false;*/
+		
+		if (iau.free && total > 0 && !depends)
+		{
+			System.out.println(instructBuffer[next][2] + " " + instructBuffer[next][3] + " FREE");
 			/*System.out.println("WORKING: " + total);
 			System.out.println("running: " + instructBuffer[next][0] + " " + instructBuffer[next][1]
 					+ " " + instructBuffer[next][2] + " " + instructBuffer[next][3]);*/
@@ -80,6 +133,8 @@ public class ReservationStation {
 			next = next % depth;
 			total--;
 		}
+		
+		System.out.println("---");
 			
 	}
 	
