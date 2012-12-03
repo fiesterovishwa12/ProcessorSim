@@ -188,23 +188,13 @@ public class Simulator {
 		*/
 	}
 	
+	/* process an instruction so register values are renamed */
 	int[] regRename (int instruction[])
 	{
-		/* Get the register values if needed*/
+		if (true)
+			return instruction;
 		int toReserve[] = new int[4];
 		toReserve[0] = instruction[0];
-		
-		// Check if instruction is an overwrite
-		boolean isWrite = instruction[0] == 1;
-		boolean isWipe = instruction[0] == 5 && instruction[1] == instruction[2] 
-				&& instruction[2] == instruction[3]; 
-		
-		int overWrite = -1;
-		
-		if (isWrite || isWipe)
-		{
-//TODO
-		}
 		
 		if (instruction[0] > 0 && instruction[0] < 19)
 		{
@@ -251,7 +241,7 @@ public class Simulator {
 		else {
 			result = bc.free;
 			if (result)
-				bc.read(instruct[0], instruct[1], instruct[2], instruct[3]);
+				bc.read(instruct);
 		}
 		
 		return result;
@@ -264,22 +254,31 @@ public class Simulator {
 		int overWrite = -1;
 		if (instruct[0] == 1)
 		{
-			overWrite = rrt.getReg(instruct[1]);
+			//overWrite = rrt.getReg(instruct[1]);
 			rrt.newReg(rrt.getReg(instruct[1]));
 		}
 		
-		int robIndex = rob.insert(instruct, overWrite);
+		int[] renamed = regRename(instruct);
+		//int[] renamed = instruct;
+		
+		int robIndex = rob.insert(renamed, overWrite);
 		
 		// Increment the clock for the memory access (cost - 1)
 		cycleTotal += 3;
 		if (instruct[0] == 1){
-			regFile.set(instruct[1], dataMem[regFile.get(instruct[2]) + instruct[3]]);
+			regFile.set(renamed[1], dataMem[regFile.get(renamed[2]) + renamed[3]]);
 		}
 		else if (instruct[0] == 2){
-			dataMem[regFile.get(instruct[2]) + instruct[3]] = regFile.get(instruct[1]);
+			System.out.println(instruct[0] + " " + instruct[1] + " " + instruct[2] 
+					+ " " + instruct[3]);
+			System.out.println(renamed[0] + " " + renamed[1] + " " + renamed[2] 
+					+ " " + renamed[3]);
+			System.out.println("WRITE TO " + (regFile.get(renamed[2]) + renamed[3]));
+			printReg();
+			dataMem[regFile.get(renamed[2]) + renamed[3]] = regFile.get(renamed[1]);
 			// Increment max mem
-			if (regFile.get(instruct[2]) + instruct[3] > maxMem)
-				maxMem = regFile.get(instruct[2]) + instruct[3];
+			if (regFile.get(renamed[2]) + renamed[3] > maxMem)
+				maxMem = regFile.get(renamed[2]) + renamed[3];
 		}
 		
 		rob.setResult(robIndex, 0);

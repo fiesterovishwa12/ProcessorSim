@@ -73,8 +73,11 @@ public class ReservationStation {
 			sim.rrt.newReg(sim.rrt.getReg(instruction[1]));
 		}
 		
+		int [] renamed = sim.regRename(instruction);
+		//int[] renamed = instruction;
+		
 		// Add instruction to the reorder buffer
-		robLoc[dest] = sim.rob.insert(instruction, overWrite);
+		robLoc[dest] = sim.rob.insert(renamed, overWrite);
 		
 		// Get available operands
 		/*
