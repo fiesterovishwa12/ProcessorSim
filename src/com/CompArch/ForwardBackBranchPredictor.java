@@ -22,4 +22,12 @@ public class ForwardBackBranchPredictor extends BranchPredictor{
 			return true;
 	}
 
+	@Override
+	void tick() {		
+	}
+
+	@Override
+	void parseInstruct(int[] instruct) {		
+	}
+
 }

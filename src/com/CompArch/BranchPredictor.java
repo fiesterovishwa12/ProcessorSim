@@ -5,6 +5,10 @@ public abstract class BranchPredictor {
 	
 	abstract boolean branches(int[] instruct);
 	
+	abstract void tick();
+	
+	abstract void parseInstruct (int [] instruct);
+	
 	BranchPredictor(Simulator s){
 		sim = s;
 	}
