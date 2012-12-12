@@ -31,19 +31,19 @@ public class LocalAdaptivePredictor extends BranchPredictor{
 
 	@Override
 	boolean branches(int index, int[] instruct) {
-		// TODO Auto-generated method stub
-		return false;
+		if (predictors.containsKey(index))
+			return predictors.get(index).branches(index, instruct);
+		else
+			return false;
 	}
 
 	@Override
 	void tick() {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	void parseInstruct(int index, int[] instruct) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -56,8 +56,9 @@ public class LocalAdaptivePredictor extends BranchPredictor{
 			addAP(index, ap);
 		}
 		else
+			shiftAP(index);
 			
-		predictors.get(index);
+		predictors.get(index).parseBranch(index, branched);
 	}
 	
 	// Add an ap for a branch instruction
