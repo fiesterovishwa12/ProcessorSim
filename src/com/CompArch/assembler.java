@@ -56,7 +56,7 @@ public class assembler
 
         try {
             docNum = 1;
-            System.out.println("Writing to:" + out);
+            //System.out.println("Writing to:" + out);
             BufferedReader br = new BufferedReader(new FileReader (file));
             String line = br.readLine();
             
@@ -117,11 +117,11 @@ public class assembler
         // Handle labels
         if (line.endsWith(":"))
 {
-System.out.print(line + " ");
+//System.out.print(line + " ");
             return;
 }
 
-        System.out.println(lineNum + ": " + line);
+        //System.out.println(lineNum + ": " + line);
         
         String[] input = line.split(" ");
         
@@ -161,7 +161,7 @@ System.out.print(line + " ");
         in1.add(i1);
         in2.add(i2);
         
-        System.out.println(c + " " + d  + " " + i1  + " " + i2);
+        //System.out.println(c + " " + d  + " " + i1  + " " + i2);
         
         lineNum++;
     }

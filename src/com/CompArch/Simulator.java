@@ -38,14 +38,14 @@ public class Simulator {
 	public RegisterRenameTable rrt;
 	
 	public static void main(String[] args) {
-		System.out.println("Launching simulator");
-		System.out.println("Running program");
+		//System.out.println("Launching simulator");
+		//System.out.println("Running program");
 
 		Simulator sim = new Simulator(100,100,200,1);
 
 		File file = new File(args[0]);
 
-		System.out.println("Assembling code");
+		//System.out.println("Assembling code");
 		
 		if (!file.isFile())
 		{
@@ -57,7 +57,7 @@ public class Simulator {
 			assembler asm = new assembler();
 			asm.read(file, "torun.out");
 		}
-
+		
 		// Load instructions
 		if (args.length > 0)
 			sim.loadInstruct("torun.out");
@@ -66,6 +66,17 @@ public class Simulator {
 		if (args.length == 2)
 			sim.loadData(args[1]);
 		
+		// Test register renaming
+		int i = 0;
+		while (sim.instructMem[i][0] > 0)
+		{
+			System.out.println(sim.instructMem[i][0] + "  " +
+					sim.instructMem[i][1] + "  " + sim.instructMem[i][2] + 
+					"  " + sim.instructMem[i][3]);
+			i++;
+		}
+		
+		/*
 		System.out.println("BEFORE:\n");
 		
 		System.out.println("INSTRUCTIONS\n---------");
@@ -89,6 +100,7 @@ public class Simulator {
 		sim.printData();
 		System.out.println("---------");
 		System.out.print("Total cycles: " + sim.cycleTotal);
+		*/
 	}
 	
 	Simulator (int registers, int instructions, int dataSize, int rsNum){
@@ -124,7 +136,7 @@ public class Simulator {
 	
 	// Load values from file to instruction memory
 	void loadInstruct (String file)	{
-		System.out.println("Loading Instruction File: " + file);
+		//System.out.println("Loading Instruction File: " + file);
 		try {
             BufferedReader br = new BufferedReader(new FileReader (file));
             String line = br.readLine();
@@ -146,7 +158,7 @@ public class Simulator {
 	
 	// Load values from file to data memory
 	void loadData (String file) {
-		System.out.println("Loading Data File: " + file);
+		//System.out.println("Loading Data File: " + file);
 		try {
             BufferedReader br = new BufferedReader(new FileReader (file));
             String line = br.readLine();
