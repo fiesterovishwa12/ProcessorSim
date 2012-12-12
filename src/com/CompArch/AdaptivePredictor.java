@@ -2,18 +2,18 @@ package com.CompArch;
 import java.lang.Math;
 
 
-public class GlobalAdaptivePredictor extends BranchPredictor {
+public class AdaptivePredictor extends BranchPredictor {
 
 	boolean history[];
 	SaturatingCounter counters[];
 	
-	GlobalAdaptivePredictor(Simulator s) {
+	AdaptivePredictor(Simulator s) {
 		super(s);
 		setHistory(4);
 	}
 
 	@Override
-	boolean branches(int[] instruct) {
+	boolean branches(int index, int[] instruct) {
 		int histNum = getHistNum();	
 		return counters[histNum].branches();
 	}

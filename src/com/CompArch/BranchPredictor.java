@@ -3,7 +3,7 @@ package com.CompArch;
 public abstract class BranchPredictor {
 	Simulator sim;
 	
-	abstract boolean branches(int[] instruct);
+	abstract boolean branches(int index, int[] instruct);
 	
 	abstract void tick();
 	

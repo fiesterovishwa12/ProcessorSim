@@ -9,7 +9,7 @@ public class ForwardBackBranchPredictor extends BranchPredictor{
 	}
 
 	@Override
-	boolean branches(int[] instruct) {
+	boolean branches(int index, int[] instruct) {
 		int val = 1;
 		if (instruct[0] == 17 || instruct[0] == 18)
 			val = instruct[3];

@@ -12,7 +12,7 @@ public class LoopDetectBranchPredictor extends BranchPredictor{
 	}
 
 	@Override
-	boolean branches(int[] instruct) {
+	boolean branches(int index, int[] instruct) {
 		return count > 0;
 	}
 
