@@ -70,9 +70,37 @@ public class Simulator {
 		int i = 0;
 		while (sim.instructMem[i][0] > 0)
 		{
-			System.out.println(sim.instructMem[i][0] + "  " +
-					sim.instructMem[i][1] + "  " + sim.instructMem[i][2] + 
-					"  " + sim.instructMem[i][3]);
+			
+			int [] instruct = sim.instructMem[i];
+			System.out.println("Before: " + instruct[0] + " " +
+					instruct[1] + " " + instruct[2] + 
+					" " + instruct[3]);
+			
+			// If it is an overwrite 
+			
+			boolean isOverwrite = instruct[0] == 1;
+			
+			// immediate operators
+			boolean isIm = (instruct[0] == 3 || instruct[0] == 9 
+					|| instruct[0] == 11 || instruct[0] == 16);
+			
+			isOverwrite = isOverwrite || (isIm
+					&& instruct[1] == instruct[2]);
+			
+			isOverwrite = isOverwrite || (!isIm
+					&& instruct[0] > 2 && instruct[0] < 19 
+					&& (instruct[1] == instruct[2] ||
+					instruct[1] == instruct[3]));
+			
+			System.out.println("Is an overwrite? " + isOverwrite);
+			
+			if (isOverwrite)
+			{
+				int overWrite = sim.rrt.getReg(instruct[1]);
+				sim.rrt.newReg(sim.rrt.getReg(instruct[1]));
+			}
+			int out[] = sim.regRename(instruct);
+			System.out.println("After:  " + out[0] + " " + out[1] + " " + out[2] + " " + out[3]);
 			i++;
 		}
 		
@@ -203,8 +231,8 @@ public class Simulator {
 	/* process an instruction so register values are renamed */
 	int[] regRename (int instruction[])
 	{
-		if (true)
-			return instruction;
+		//if (true)
+			//return instruction;
 		int toReserve[] = new int[4];
 		toReserve[0] = instruction[0];
 		

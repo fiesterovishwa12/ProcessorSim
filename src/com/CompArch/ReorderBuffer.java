@@ -5,7 +5,8 @@ public class ReorderBuffer {
 	private int dest[];
 	private int result[];
 	private boolean valid[];
-	// Logs if instruction is over writing a particular register's value (for register renaming)
+	
+	// Logs if instruction is overwriting a particular register's value (for register renaming)
 	private int overWrite[];
 	private int size;
 	private int head;

@@ -44,6 +44,6 @@ public class RegisterRenameTable {
 	void free (int r)
 	{
 		if (r >= 0)
-			available[r] = false;
+			available[r] = true;
 	}
 }
