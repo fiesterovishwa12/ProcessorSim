@@ -27,7 +27,13 @@ public class ForwardBackBranchPredictor extends BranchPredictor{
 	}
 
 	@Override
-	void parseInstruct(int[] instruct) {		
+	void parseInstruct(int index, int[] instruct) {		
+	}
+
+	@Override
+	void parseBranch(int index, boolean branched) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

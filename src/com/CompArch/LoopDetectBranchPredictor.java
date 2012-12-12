@@ -42,12 +42,18 @@ public class LoopDetectBranchPredictor extends BranchPredictor{
 	}
 
 	@Override
-	void parseInstruct(int[] instruct) {
+	void parseInstruct(int index, int[] instruct) {
 		
 		lag--;
 		
 		if (isIncrement(instruct))
 			count = lag; 
+	}
+
+	@Override
+	void parseBranch(int index, boolean branched) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

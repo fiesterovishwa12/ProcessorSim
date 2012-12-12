@@ -7,7 +7,10 @@ public abstract class BranchPredictor {
 	
 	abstract void tick();
 	
-	abstract void parseInstruct (int [] instruct);
+	/** Takes an instruction and its index **/
+	abstract void parseInstruct (int index, int [] instruct);
+	
+	abstract void parseBranch (int index, boolean branched);
 	
 	BranchPredictor(Simulator s){
 		sim = s;
