@@ -1,3 +1,4 @@
+//Start of loop
 jmp STARTLOOP
 START:
 // Zero swap count and pos

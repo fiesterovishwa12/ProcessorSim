@@ -67,8 +67,8 @@ public class ReorderBuffer {
 		{
 			sim.regFile.set(dest[tail], result[tail]);
 			System.out.println("WROTE TO: " + dest[tail] + " : " + result[tail]);
-
-			//sim.rrt.free(overWrite[tail]);
+			System.out.println("FREEING: " + overWrite[tail]);
+			sim.rrt.free(overWrite[tail]);
 			valid[tail] = false;
 			tail++;
 			if (tail >= size)

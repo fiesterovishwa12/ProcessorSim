@@ -70,14 +70,12 @@ public class ReservationStation {
 				|| instruct[0] == 11 || instruct[0] == 16);
 
 		isOverwrite = isOverwrite || (isIm
-				&& instruct[1] == instruct[2]);
+				&& instruct[1] != instruct[2]);
 
 		isOverwrite = isOverwrite || (!isIm
 				&& instruct[0] > 2 && instruct[0] < 19 
 				&& (instruct[1] == instruct[2] ||
 				instruct[1] == instruct[3]));
-
-		//System.out.println("Is an overwrite? " + isOverwrite);
 
 		int overWrite = -1;
 		
