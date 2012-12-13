@@ -45,7 +45,7 @@ public class ReservationStation {
 	}
 	
 	// Takes instruction, returns true if added to buffer, false if buffer full
-	public boolean receive (int[] instruction)
+	public boolean receive (int[] instruct)
 	{
 		if (total == depth)
 		{
@@ -54,55 +54,52 @@ public class ReservationStation {
 		
 		total++;
 		
+		// Where to add instruction
 		int dest = (next + total - 1) % depth;
-		/*System.out.println("--");
-		System.out.println(next + " " + total + " " + depth);
-		System.out.println((next + total - 1) % depth);
-		System.out.println("--");*/
 		
-		instructBuffer[dest] = instruction;
-		
-		boolean isWipe = instruction[0] == 5 && instruction[1] == instruction[2] 
-				&& instruction[2] == instruction[3]; 
-		
+		System.out.println("Before: " + instruct[0] + " " +
+				instruct[1] + " " + instruct[2] + 
+				" " + instruct[3]);
+
+		// If it is an overwrite 
+
+		boolean isOverwrite = instruct[0] == 1;
+
+		// immediate operators
+		boolean isIm = (instruct[0] == 3 || instruct[0] == 9 
+				|| instruct[0] == 11 || instruct[0] == 16);
+
+		isOverwrite = isOverwrite || (isIm
+				&& instruct[1] == instruct[2]);
+
+		isOverwrite = isOverwrite || (!isIm
+				&& instruct[0] > 2 && instruct[0] < 19 
+				&& (instruct[1] == instruct[2] ||
+				instruct[1] == instruct[3]));
+
+		System.out.println("Is an overwrite? " + isOverwrite);
+
 		int overWrite = -1;
 		
-		if (isWipe)
+		if (isOverwrite)
 		{
-			overWrite = sim.rrt.getReg(instruction[1]);
-			sim.rrt.newReg(sim.rrt.getReg(instruction[1]));
+			overWrite = sim.rrt.getReg(instruct[1]);
+			sim.rrt.newReg(sim.rrt.getReg(instruct[1]));
 		}
+		int out[] = sim.regRename(instruct);
 		
-		int [] renamed = sim.regRename(instruction);
-		//int[] renamed = instruction;
+		System.out.println("After:  " + out[0] + " " + out[1] + " " + out[2] + " " + out[3]);
+		
+		// Write to instruction buffer
+		instructBuffer[dest] = instruct;
+		
+		boolean isWipe = instruct[0] == 5 && instruct[1] == instruct[2] 
+				&& instruct[2] == instruct[3]; 
+
 		
 		// Add instruction to the reorder buffer
-		robLoc[dest] = sim.rob.insert(renamed, overWrite);
-		
-		// Get available operands
-		/*
-		if (sim.regFile.isFree(instruction[2]))
-		{
-			instructBuffer[dest][2] = sim.regFile.get(instruction[2]);
-			available[dest][0] = true;
-		}
-		
-		int in = instruction[0];
-		
-		if (in != 3 && in != 9 && in != 11 && in != 13 && in != 14 && in != 16)
-		{
-			if (sim.regFile.isFree(instruction[3]))
-			{
-				instructBuffer[dest][3] = sim.regFile.get(instruction[3]);
-				available[dest][1] = true;
-			}
-		}
-		
-		if (in != 0 && in != 19)
-		{
-			//Mark as issued
-		}
-		*/
+		robLoc[dest] = sim.rob.insert(out, overWrite);
+
 		return true;
 	}
 	

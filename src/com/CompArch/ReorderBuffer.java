@@ -37,7 +37,7 @@ public class ReorderBuffer {
 		valid[index] = true;
 	}
 	
-	// insert an instruction into the reorder buffer, along with the register it is overwriting
+	/** insert an instruction into the reorder buffer, along with the register it is overwriting */
 	int insert (int[] instruction, int over)
 	{
 		instruct[head] = instruction[0];

@@ -66,43 +66,7 @@ public class Simulator {
 		if (args.length == 2)
 			sim.loadData(args[1]);
 		
-		// Test register renaming
-		int i = 0;
-		while (sim.instructMem[i][0] > 0)
-		{
-			
-			int [] instruct = sim.instructMem[i];
-			System.out.println("Before: " + instruct[0] + " " +
-					instruct[1] + " " + instruct[2] + 
-					" " + instruct[3]);
-			
-			// If it is an overwrite 
-			
-			boolean isOverwrite = instruct[0] == 1;
-			
-			// immediate operators
-			boolean isIm = (instruct[0] == 3 || instruct[0] == 9 
-					|| instruct[0] == 11 || instruct[0] == 16);
-			
-			isOverwrite = isOverwrite || (isIm
-					&& instruct[1] == instruct[2]);
-			
-			isOverwrite = isOverwrite || (!isIm
-					&& instruct[0] > 2 && instruct[0] < 19 
-					&& (instruct[1] == instruct[2] ||
-					instruct[1] == instruct[3]));
-			
-			System.out.println("Is an overwrite? " + isOverwrite);
-			
-			if (isOverwrite)
-			{
-				int overWrite = sim.rrt.getReg(instruct[1]);
-				sim.rrt.newReg(sim.rrt.getReg(instruct[1]));
-			}
-			int out[] = sim.regRename(instruct);
-			System.out.println("After:  " + out[0] + " " + out[1] + " " + out[2] + " " + out[3]);
-			i++;
-		}
+		//sim.testRegRename();
 		
 		/*
 		System.out.println("BEFORE:\n");
@@ -113,9 +77,11 @@ public class Simulator {
 		System.out.println("DATA\n---------");
 		sim.printData();
 		System.out.println("---------");
+		*/
 		
 		sim.run();
 		
+		/*
 		System.out.println("\nAFTER:\n");
 		
 		System.out.println("INSTRUCTIONS\n---------");
@@ -129,6 +95,48 @@ public class Simulator {
 		System.out.println("---------");
 		System.out.print("Total cycles: " + sim.cycleTotal);
 		*/
+		
+	}
+	
+	void testRegRename()
+	{
+		// Test register renaming
+		int i = 0;
+		while (instructMem[i][0] > 0)
+		{
+
+			int [] instruct = instructMem[i];
+			System.out.println("Before: " + instruct[0] + " " +
+					instruct[1] + " " + instruct[2] + 
+					" " + instruct[3]);
+
+			// If it is an overwrite 
+
+			boolean isOverwrite = instruct[0] == 1;
+
+			// immediate operators
+			boolean isIm = (instruct[0] == 3 || instruct[0] == 9 
+					|| instruct[0] == 11 || instruct[0] == 16);
+
+			isOverwrite = isOverwrite || (isIm
+					&& instruct[1] == instruct[2]);
+
+			isOverwrite = isOverwrite || (!isIm
+					&& instruct[0] > 2 && instruct[0] < 19 
+					&& (instruct[1] == instruct[2] ||
+					instruct[1] == instruct[3]));
+
+			System.out.println("Is an overwrite? " + isOverwrite);
+
+			if (isOverwrite)
+			{
+				int overWrite = rrt.getReg(instruct[1]);
+				rrt.newReg(rrt.getReg(instruct[1]));
+			}
+			int out[] = regRename(instruct);
+			System.out.println("After:  " + out[0] + " " + out[1] + " " + out[2] + " " + out[3]);
+			i++;
+		}
 	}
 	
 	Simulator (int registers, int instructions, int dataSize, int rsNum){
@@ -352,6 +360,6 @@ public class Simulator {
 			if (next)
 				PC++;
 		}
-		System.out.println("Halting " + rs[0].isFree());
+		//System.out.println("Halting " + rs[0].isFree());
 	}
 }
