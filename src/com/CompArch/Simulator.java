@@ -251,10 +251,8 @@ public class Simulator {
 	int[] regRename (int instruction[])
 	{
 		if (instruction[0] == 19)
-		{
-			System.out.println("JUMPING!!!!");
 			return instruction;
-		}
+	
 		//if (true)
 			//return instruction;
 		int toReserve[] = new int[4];
@@ -303,7 +301,6 @@ public class Simulator {
 			result = iauRS[0].receive(instruct);
 		}
 		else {
-			System.out.println("JUMPING: " + instruct[0]);
 			result = bc.free && isRsFree();
 			if (result)
 				bc.read(instruct);

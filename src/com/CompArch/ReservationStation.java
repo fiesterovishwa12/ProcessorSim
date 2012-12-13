@@ -57,9 +57,7 @@ public class ReservationStation {
 		// Where to add instruction
 		int dest = (next + total - 1) % depth;
 		
-		System.out.println("Before: " + instruct[0] + " " +
-				instruct[1] + " " + instruct[2] + 
-				" " + instruct[3]);
+
 
 		// If it is an overwrite 
 
@@ -76,20 +74,41 @@ public class ReservationStation {
 				&& instruct[0] > 2 && instruct[0] < 17 
 				&& (instruct[1] == instruct[2] ||
 				instruct[1] == instruct[3]));
-
+		
+		boolean isSelfWrite = instruct[1] == instruct[2];
+		isSelfWrite = isSelfWrite || (!isIm && instruct[1] 
+				== instruct[3] && instruct[0] > 2 && instruct[0] < 17 );
+		
+		if (isSelfWrite)
+		{
+			System.out.println("is selfwrite");
+			System.out.println("Before: " + instruct[0] + " " +
+					instruct[1] + " " + instruct[2] + 
+					" " + instruct[3]);
+		}
+		
 		int overWrite = -1;
 		
 		if (isOverwrite && sim.rrt.assigned(instruct[1]))
 		{
-				System.out.println("REGISTER " + instruct[1]);
+				//System.out.println("REGISTER " + instruct[1]);
 				overWrite = sim.rrt.getReg(instruct[1]);
-				System.out.println("OVERWRITING: " + overWrite);
+				//System.out.println("OVERWRITING: " + overWrite);
 				int new1 = sim.rrt.newReg(instruct[1]);
-				System.out.println("WITH: " + new1 + ":" + sim.rrt.getReg(instruct[1]));
+				//System.out.println("WITH: " + new1 + ":" + sim.rrt.getReg(instruct[1]));
 		}
+				
 		int out[] = sim.regRename(instruct);
 		
-		System.out.println("After:  " + out[0] + " " + out[1] + " " + out[2] + " " + out[3]);
+		if (isSelfWrite && !(isOverwrite && sim.rrt.assigned(instruct[1])))
+		{
+			System.out.println("Mid:  " + out[0] + " " + out[1] + " " + out[2] + " " + out[3]);
+			overWrite = out[1];
+			out[1] = sim.rrt.newReg(instruct[1]);
+		}
+
+		if (isSelfWrite)
+			System.out.println("After:  " + out[0] + " " + out[1] + " " + out[2] + " " + out[3]);
 		
 		// Write to instruction buffer
 		instructBuffer[dest] = out;
