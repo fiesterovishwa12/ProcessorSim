@@ -57,10 +57,7 @@ public class ReservationStation {
 		// Where to add instruction
 		int dest = (next + total - 1) % depth;
 		
-
-
 		// If it is an overwrite 
-
 		boolean isOverwrite = instruct[0] == 1;
 
 		// immediate operators
@@ -75,17 +72,11 @@ public class ReservationStation {
 				&& (instruct[1] == instruct[2] ||
 				instruct[1] == instruct[3]));
 		
+		
+		// If the operation is self writing
 		boolean isSelfWrite = instruct[1] == instruct[2];
 		isSelfWrite = isSelfWrite || (!isIm && instruct[1] 
 				== instruct[3] && instruct[0] > 2 && instruct[0] < 17 );
-		
-		if (isSelfWrite)
-		{
-			System.out.println("is selfwrite");
-			System.out.println("Before: " + instruct[0] + " " +
-					instruct[1] + " " + instruct[2] + 
-					" " + instruct[3]);
-		}
 		
 		int overWrite = -1;
 		
@@ -102,14 +93,16 @@ public class ReservationStation {
 		
 		if (isSelfWrite && !(isOverwrite && sim.rrt.assigned(instruct[1])))
 		{
-			System.out.println("Mid:  " + out[0] + " " + out[1] + " " + out[2] + " " + out[3]);
 			overWrite = out[1];
 			out[1] = sim.rrt.newReg(instruct[1]);
 		}
-
-		if (isSelfWrite)
-			System.out.println("After:  " + out[0] + " " + out[1] + " " + out[2] + " " + out[3]);
 		
+		if (out[0] < 19)
+		{
+			System.out.println(out[0] + " " + out[1] + " " + out[2] + " " + out[3]);
+			sim.regFile.issue(out[1]);
+		}
+
 		// Write to instruction buffer
 		instructBuffer[dest] = out;
 		
@@ -127,10 +120,31 @@ public class ReservationStation {
 	
 	void dispatch ()
 	{
+		boolean depends = false;
+
+		int [] instruct = instructBuffer[next];
+		// immediate operators
+		boolean isIm = (instruct[0] == 3 || instruct[0] == 9 
+				|| instruct[0] == 11 || instruct[0] == 16);
+		
+		if (!sim.regFile.isFree(instruct[2]))
+		{
+			depends = true;
+			System.out.println("Waiting on: " + instruct[1]);
+		}
+
+		if (!isIm && instruct[0] > 2 && instruct[0] < 17 )
+			if (!sim.regFile.isFree(instruct[3]))
+			{
+				depends = true;
+				//System.out.println("Waiting on: " + instruct[2]);
+			}
+
+		depends = false;
+
 		// perform dependancy and eu availability checking, if ready then send
 		/*System.out.println(instructBuffer[next][0] + " " + instructBuffer[next][1] + " " + 
 				instructBuffer[next][2] + " " + instructBuffer[next][3]);*/
-		boolean depends = false;
 		
 		/*
 		if (!sim.regFile.isFree(instructBuffer[next][2]))

@@ -373,10 +373,9 @@ public class Simulator {
 		
 		while (instructMem[PC][0] != 0 || !rsFree /* !iau.free */|| !bc.free) {
 			boolean next = false;
-			if (rsFree/* iau.free*/ && bc.free)
+			if (rsFree && bc.free)
 				next = fetch(instructMem[PC]);
 			tick();
-			rsFree = isRsFree();
 			if (next)
 				PC++;
 		}

@@ -41,15 +41,12 @@ public class RegisterRenameTable {
 	
 	int getReg (int in)
 	{
-		System.out.print(in +" to ");
 		if( rename[in] >= 0)
 		{
-			System.out.println(rename[in]);
 			return rename[in];
 		}
 		// otherwise it is a new register and so is assigned as such
 		int out = newReg(in);
-		System.out.println(out);
 		return out;
 	}
 	

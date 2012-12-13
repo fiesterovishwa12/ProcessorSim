@@ -8,7 +8,7 @@ public class RegisterFile {
 	int maxReg = 0;
 	
 	// Scoreboard for registers
-	boolean[] scoreboard;
+	private boolean[] scoreboard;
 	
 	public RegisterFile(int size) 
 	{
@@ -21,6 +21,7 @@ public class RegisterFile {
 	// Set the register at index i to val
 	public void set(int i, int val)
 	{
+		System.out.println("Freeing  " + i);
 		scoreboard[i] = true;
 		reg[i] = val;
 		if (maxReg < i)
@@ -29,6 +30,7 @@ public class RegisterFile {
 	
 	public void issue(int i)
 	{
+		System.out.println("Locking " + i);
 		scoreboard[i] = false;
 	}
 	
