@@ -28,6 +28,9 @@ public class Simulator {
 	// IAU Reservation station array
 	private ReservationStation iauRS[];
 	
+	// The next IAU RS to use
+	int nextIAU;
+	
 	// Memory Manager RS array
 	private ReservationStation memManRS[];
 	
@@ -44,7 +47,7 @@ public class Simulator {
 		//System.out.println("Launching simulator");
 		//System.out.println("Running program");
 
-		Simulator sim = new Simulator(100,100,200,1);
+		Simulator sim = new Simulator(100,100,200,2);
 
 		File file = new File(args[0]);
 
@@ -278,7 +281,7 @@ public class Simulator {
 		return toReserve;
 	}
 	
-	// Fetch decode and execute an instruction, returns true if instruction executed, otherwise false
+	// Fetch decode and issue an instruction, returns true if instruction issued, otherwise false
 	boolean fetch(int[] instruct) {
 		boolean result;
 		
@@ -298,7 +301,12 @@ public class Simulator {
 			//result = iau.free;
 			//if (result)
 				//iau.read(instruct[0], instruct[1], instruct[2], instruct[3]);
-			result = iauRS[0].receive(instruct);
+			System.out.println("Sent : " + instruct[0] + " " + instruct[1] + " " 
+				+ instruct[2] + " " + instruct[3] + " to " + nextIAU);
+			result = iauRS[nextIAU].receive(instruct);
+			nextIAU++;
+			if (nextIAU >= iauRS.length)
+				nextIAU = 0;
 		}
 		else {
 			result = bc.free && isRsFree();
