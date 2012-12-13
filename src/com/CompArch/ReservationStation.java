@@ -27,6 +27,11 @@ public class ReservationStation {
 		else
 			return true;
 	}
+	
+	public boolean canWrite()
+	{
+		return total < depth;
+	}
 
 	public ReservationStation (Simulator s, int size, ExecutionUnit e)
 	{
@@ -114,6 +119,10 @@ public class ReservationStation {
 	
 	public void tick ()
 	{
+		for (int i = 0; i<instructBuffer.length; i++)
+		{
+			System.out.println(instructBuffer[i][0]);
+		}
 		this.dispatch();
 		eu.tick();
 	}
@@ -130,7 +139,7 @@ public class ReservationStation {
 		if (!sim.regFile.isFree(instruct[2]))
 		{
 			depends = true;
-			System.out.println("Waiting on: " + instruct[1]);
+			//System.out.println("Waiting on: " + instruct[1]);
 		}
 
 		if (!isIm && instruct[0] > 2 && instruct[0] < 17 )

@@ -175,7 +175,10 @@ public class Simulator {
 	void tick () {
 		cycleTotal++;
 		for (int i = 0; i < iauRS.length; i++)
+		{
+			System.out.println("RS " + i);
 			iauRS[i].tick();
+		}
 		
 		for (int i = 0; i < memManRS.length; i++)
 			memManRS[i].tick();
@@ -294,10 +297,22 @@ public class Simulator {
 		{
 			result = memManRS[0].receive(instruct);
 			//mem(instruct);
-		}
+		}	
+		
 		
 		// IAU instructions - TODO currently all sent to one RS
 		else if (instruct[0] <= 16) {
+			
+			// IAU OPERATIONS
+			if (!isRsFree())
+			{
+				System.out.println("No");
+				System.out.println("1: " + iauRS[0].isFree());
+				System.out.println("2: " + iauRS[1].isFree());
+
+				return false;
+				//nextIAU++;
+			}
 			//result = iau.free;
 			//if (result)
 				//iau.read(instruct[0], instruct[1], instruct[2], instruct[3]);
@@ -309,50 +324,14 @@ public class Simulator {
 				nextIAU = 0;
 		}
 		else {
+			// Handle branch
+			
 			result = bc.free && isRsFree();
 			if (result)
 				bc.read(instruct);
 		}
 		
 		return result;
-	}
-	
-	// Handles memory loads and writes
-	void mem(int[] instruct)
-	{
-		
-		// is op an overwrite?
-		int overWrite = -1;
-		if (instruct[0] == 1)
-		{
-			//overWrite = rrt.getReg(instruct[1]);
-			rrt.newReg(rrt.getReg(instruct[1]));
-		}
-		
-		int[] renamed = regRename(instruct);
-		//int[] renamed = instruct;
-		
-		int robIndex = rob.insert(renamed, overWrite);
-		
-		// Increment the clock for the memory access (cost - 1)
-		cycleTotal += 3;
-		if (instruct[0] == 1){
-			regFile.set(renamed[1], dataMem[regFile.get(renamed[2]) + renamed[3]]);
-		}
-		else if (instruct[0] == 2){
-			System.out.println(instruct[0] + " " + instruct[1] + " " + instruct[2] 
-					+ " " + instruct[3]);
-			System.out.println(renamed[0] + " " + renamed[1] + " " + renamed[2] 
-					+ " " + renamed[3]);
-			System.out.println("WRITE TO " + (regFile.get(renamed[2]) + renamed[3]));
-			printReg();
-			dataMem[regFile.get(renamed[2]) + renamed[3]] = regFile.get(renamed[1]);
-			// Increment max mem
-			if (regFile.get(renamed[2]) + renamed[3] > maxMem)
-				maxMem = regFile.get(renamed[2]) + renamed[3];
-		}
-		
-		rob.setResult(robIndex, 0);
 	}	
 	
 	// Are reservation stations free?
@@ -381,7 +360,7 @@ public class Simulator {
 		
 		while (instructMem[PC][0] != 0 || !rsFree /* !iau.free */|| !bc.free) {
 			boolean next = false;
-			if (rsFree && bc.free)
+			//if (rsFree && bc.free)
 				next = fetch(instructMem[PC]);
 			tick();
 			rsFree = isRsFree();

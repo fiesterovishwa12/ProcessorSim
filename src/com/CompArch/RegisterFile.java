@@ -30,7 +30,7 @@ public class RegisterFile {
 	
 	public void issue(int i)
 	{
-		System.out.println("Locking " + i);
+		//System.out.println("Locking " + i);
 		scoreboard[i] = false;
 	}
 	
