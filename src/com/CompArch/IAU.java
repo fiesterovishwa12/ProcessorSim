@@ -2,15 +2,13 @@ package com.CompArch;
 
 // An integer arithmetic unit
 
-public class IAU {
+public class IAU extends ExecutionUnit {
 	
 	// Output of calculation
 	private int out;
 	
 	// Destination of output
 	private int dest;
-	
-	Simulator sim;
 	
 	// Cycles remaining for current instruction
 	int cycles;
@@ -20,13 +18,14 @@ public class IAU {
 	
 	IAU (Simulator s)
 	{
-		sim = s;
+		super(s);
 		out = 0;
 		free = true;
 		cycles = 0;
 	}
 	
 	// Calculate the given command
+	@Override
 	public void read (int instruct, int r1, int r2, int r3, int d)
 	{
 		if (!free) {
@@ -115,6 +114,7 @@ public class IAU {
 		
 	}
 	
+	@Override
 	public void tick ()
 	{
 		if (free)
@@ -129,5 +129,10 @@ public class IAU {
 			//sim.regFile.set(dest, out);
 			free = true;
 		}
+	}
+
+	@Override
+	boolean isFree() {
+		return free;
 	}
 }

@@ -3,7 +3,7 @@ package com.CompArch;
 public class ReservationStation {
 
 	private Simulator sim;
-	private IAU iau;
+	private ExecutionUnit eu;
 	
 	private int depth;
 	
@@ -22,7 +22,7 @@ public class ReservationStation {
 	
 	public boolean isFree ()
 	{
-		if (total > 0 || !iau.free)
+		if (total > 0 || !eu.isFree())
 			return false;
 		else
 			return true;
@@ -35,7 +35,7 @@ public class ReservationStation {
 		total = 0;
 		instructBuffer = new int[size][4];
 		robLoc = new int[size];
-		iau = new IAU(s);
+		eu = new IAU(s);
 		available = new boolean[size][2];
 		for (int i = 0; i < size; i++) {
 			available[i][0] = false;
@@ -91,7 +91,7 @@ public class ReservationStation {
 		System.out.println("After:  " + out[0] + " " + out[1] + " " + out[2] + " " + out[3]);
 		
 		// Write to instruction buffer
-		instructBuffer[dest] = instruct;
+		instructBuffer[dest] = out;
 		
 		boolean isWipe = instruct[0] == 5 && instruct[1] == instruct[2] 
 				&& instruct[2] == instruct[3]; 
@@ -106,12 +106,12 @@ public class ReservationStation {
 	public void tick ()
 	{
 		this.dispatch();
-		iau.tick();
+		eu.tick();
 	}
 	
 	void dispatch ()
 	{
-		// perform dependancy and IAU availability checking, if ready then send
+		// perform dependancy and eu availability checking, if ready then send
 		/*System.out.println(instructBuffer[next][0] + " " + instructBuffer[next][1] + " " + 
 				instructBuffer[next][2] + " " + instructBuffer[next][3]);*/
 		boolean depends = false;
@@ -133,14 +133,14 @@ public class ReservationStation {
 		}
 		depends = false;*/
 		
-		if (iau.free && total > 0 && !depends)
+		if (eu.isFree() && total > 0 && !depends)
 		{
 			//System.out.println(instructBuffer[next][2] + " " + instructBuffer[next][3] + " FREE");
 			/*System.out.println("WORKING: " + total);
 			System.out.println("running: " + instructBuffer[next][0] + " " + instructBuffer[next][1]
 					+ " " + instructBuffer[next][2] + " " + instructBuffer[next][3]);*/
 			
-			iau.read(instructBuffer[next][0], instructBuffer[next][1], instructBuffer[next][2], 
+			eu.read(instructBuffer[next][0], instructBuffer[next][1], instructBuffer[next][2], 
 					instructBuffer[next][3], robLoc[next]);
 			next++;
 			next = next % depth;
