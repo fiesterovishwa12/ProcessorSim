@@ -4,7 +4,8 @@ package com.CompArch;
 public abstract class ExecutionUnit {
 	Simulator sim;
 	
-	/** If execution unit is free to accept another instruction*/
+	/** If execution unit 
+	 * is free to accept another instruction*/
 	abstract boolean isFree();
 	
 	/** Read in an instruction to be executed */

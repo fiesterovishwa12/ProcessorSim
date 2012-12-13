@@ -27,17 +27,27 @@ public class RegisterRenameTable {
 			{
 				rename[in] = i;
 				available[i] = false;
+				System.out.println("to " + i);
 				return i;
 			}
 		}
+		
 		return -1;
+	}
+	
+	boolean assigned (int in)
+	{
+		return rename[in] >= 0;
 	}
 	
 	int getReg (int in)
 	{
+		System.out.println("GETTING REG " + in);
 		if( rename[in] >= 0)
 			return rename[in];
+		System.out.println("RENAME: " + in + " to " + rename[in]);
 		// otherwise it is a new register and so is assigned as such
+		System.out.println("NEW REG:" + in);
 		return newReg(in);
 	}
 	

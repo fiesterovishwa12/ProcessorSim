@@ -65,8 +65,9 @@ public class ReorderBuffer {
 		//Check if current instruction is valid, if so then write it and move on to the next
 		if (valid[tail])
 		{
-			if (instruct[tail] > 2)
-				sim.regFile.set(dest[tail], result[tail]);
+			sim.regFile.set(dest[tail], result[tail]);
+			System.out.println("WROTE TO: " + dest[tail] + " : " + result[tail]);
+
 			sim.rrt.free(overWrite[tail]);
 			valid[tail] = false;
 			tail++;

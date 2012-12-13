@@ -25,8 +25,11 @@ public class Simulator {
 	
 	public RegisterFile regFile;
 	
-	// Reservation station array
-	private ReservationStation rs[];
+	// IAU Reservation station array
+	private ReservationStation iauRS[];
+	
+	// Memory Manager RS array
+	private ReservationStation memManRS[];
 	
 	// Branch controller of the processor
 	private BranchController bc;
@@ -139,11 +142,15 @@ public class Simulator {
 		}
 	}
 	
-	Simulator (int registers, int instructions, int dataSize, int rsNum){
+	Simulator (int registers, int instructions, int dataSize, int iauNum){
 		// Set up components
-		rs = new ReservationStation[rsNum];
-		for (int i = 0; i < rsNum; i++)
-			rs[i] = new ReservationStation(this, 4);
+		iauRS = new ReservationStation[iauNum];
+		for (int i = 0; i < iauNum; i++)
+			iauRS[i] = new ReservationStation(this, 4, new IAU(this));
+		
+		memManRS = new ReservationStation[1];
+		for (int i = 0; i < memManRS.length; i++)
+			memManRS[i] = new ReservationStation(this, 4, new MemoryManager(this));
 		
 		bc = new BranchController(this);
 		
@@ -158,14 +165,18 @@ public class Simulator {
 		//TODO make rrt smaller than registers
 		rrt = new RegisterRenameTable(registers);
 		
-		rob = new ReorderBuffer(this, 4*rsNum);
+		rob = new ReorderBuffer(this, 4*iauNum);
 	}
 	
 	// Tick the processor
 	void tick () {
 		cycleTotal++;
-		for (int i = 0; i < rs.length; i++)
-			rs[i].tick();
+		for (int i = 0; i < iauRS.length; i++)
+			iauRS[i].tick();
+		
+		for (int i = 0; i < memManRS.length; i++)
+			memManRS[i].tick();
+		
 		bc.tick();
 		rob.tick();
 	}
@@ -247,7 +258,9 @@ public class Simulator {
 		if (instruction[0] > 0 && instruction[0] < 19)
 		{
 			toReserve[1] = rrt.getReg(instruction[1]);
+			System.out.println(instruction[1] + " to " + toReserve[1]);
 			toReserve[2] = rrt.getReg(instruction[2]);
+			System.out.println(instruction[2] + " to " + toReserve[2]);
 		}
 		
 		boolean thirdReg = instruction[0] > 3 && instruction[0] < 9;
@@ -269,14 +282,14 @@ public class Simulator {
 		boolean result;
 		
 		// Log the maximum written to register
-		if (instruct[1] > maxReg && instruct[0] != 0 && instruct[0] != 19)
+		if (instruct[1] > maxReg && instruct[0] > 0 && instruct[0] < 19)
 			maxReg = instruct[1];
 		
 		// Memory load
 		if (instruct[0] <= 2)
 		{
-			result = true;
-			mem(instruct);
+			result = memManRS[0].receive(instruct);
+			//mem(instruct);
 		}
 		
 		// IAU instructions - TODO currently all sent to one RS
@@ -284,7 +297,7 @@ public class Simulator {
 			//result = iau.free;
 			//if (result)
 				//iau.read(instruct[0], instruct[1], instruct[2], instruct[3]);
-			result = rs[0].receive(instruct);
+			result = iauRS[0].receive(instruct);
 		}
 		else {
 			result = bc.free;
@@ -298,6 +311,7 @@ public class Simulator {
 	// Handles memory loads and writes
 	void mem(int[] instruct)
 	{
+		
 		// is op an overwrite?
 		int overWrite = -1;
 		if (instruct[0] == 1)
@@ -337,9 +351,14 @@ public class Simulator {
 	boolean isRsFree()
 	{
 		boolean result = true;
-		for (int i = 0; i < rs.length; i++)
+		for (int i = 0; i < iauRS.length; i++)
 		{
-			if (!rs[i].isFree())
+			if (!iauRS[i].isFree())
+				result = false;
+		}
+		for (int i = 0; i < memManRS.length; i++)
+		{
+			if (!memManRS[i].isFree())
 				result = false;
 		}
 		return result;

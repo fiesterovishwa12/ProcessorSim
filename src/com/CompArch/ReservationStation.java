@@ -28,14 +28,14 @@ public class ReservationStation {
 			return true;
 	}
 
-	public ReservationStation (Simulator s, int size)
+	public ReservationStation (Simulator s, int size, ExecutionUnit e)
 	{
 		depth = size;
 		next = 0;
 		total = 0;
 		instructBuffer = new int[size][4];
 		robLoc = new int[size];
-		eu = new IAU(s);
+		eu = e;
 		available = new boolean[size][2];
 		for (int i = 0; i < size; i++) {
 			available[i][0] = false;
@@ -81,10 +81,13 @@ public class ReservationStation {
 
 		int overWrite = -1;
 		
-		if (isOverwrite)
+		if (isOverwrite && sim.rrt.assigned(instruct[1]))
 		{
-			overWrite = sim.rrt.getReg(instruct[1]);
-			sim.rrt.newReg(sim.rrt.getReg(instruct[1]));
+				System.out.println("REGISTER " + instruct[1]);
+				overWrite = sim.rrt.getReg(instruct[1]);
+				System.out.println("OVERWRITING: " + overWrite);
+				int new1 = sim.rrt.newReg(instruct[1]);
+				System.out.println("WITH: " + new1 + ":" + sim.rrt.getReg(instruct[1]));
 		}
 		int out[] = sim.regRename(instruct);
 		
@@ -92,10 +95,6 @@ public class ReservationStation {
 		
 		// Write to instruction buffer
 		instructBuffer[dest] = out;
-		
-		boolean isWipe = instruct[0] == 5 && instruct[1] == instruct[2] 
-				&& instruct[2] == instruct[3]; 
-
 		
 		// Add instruction to the reorder buffer
 		robLoc[dest] = sim.rob.insert(out, overWrite);
