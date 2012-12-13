@@ -376,9 +376,10 @@ public class Simulator {
 			if (rsFree && bc.free)
 				next = fetch(instructMem[PC]);
 			tick();
+			rsFree = isRsFree();
 			if (next)
 				PC++;
 		}
-		//System.out.println("Halting " + rs[0].isFree());
+		System.out.println("Halting " + iauRS[0].isFree());
 	}
 }
