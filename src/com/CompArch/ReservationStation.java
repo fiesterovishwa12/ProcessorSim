@@ -73,7 +73,7 @@ public class ReservationStation {
 				&& instruct[1] != instruct[2]);
 
 		isOverwrite = isOverwrite || (!isIm
-				&& instruct[0] > 2 && instruct[0] < 19 
+				&& instruct[0] > 2 && instruct[0] < 17 
 				&& (instruct[1] == instruct[2] ||
 				instruct[1] == instruct[3]));
 
