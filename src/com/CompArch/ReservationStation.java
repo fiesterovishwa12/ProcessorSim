@@ -77,7 +77,7 @@ public class ReservationStation {
 				&& (instruct[1] == instruct[2] ||
 				instruct[1] == instruct[3]));
 
-		System.out.println("Is an overwrite? " + isOverwrite);
+		//System.out.println("Is an overwrite? " + isOverwrite);
 
 		int overWrite = -1;
 		

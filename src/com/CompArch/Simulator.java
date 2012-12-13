@@ -250,6 +250,11 @@ public class Simulator {
 	/* process an instruction so register values are renamed */
 	int[] regRename (int instruction[])
 	{
+		if (instruction[0] == 19)
+		{
+			System.out.println("JUMPING!!!!");
+			return instruction;
+		}
 		//if (true)
 			//return instruction;
 		int toReserve[] = new int[4];
@@ -258,9 +263,7 @@ public class Simulator {
 		if (instruction[0] > 0 && instruction[0] < 19)
 		{
 			toReserve[1] = rrt.getReg(instruction[1]);
-			System.out.println(instruction[1] + " to " + toReserve[1]);
 			toReserve[2] = rrt.getReg(instruction[2]);
-			System.out.println(instruction[2] + " to " + toReserve[2]);
 		}
 		
 		boolean thirdReg = instruction[0] > 3 && instruction[0] < 9;
@@ -300,7 +303,8 @@ public class Simulator {
 			result = iauRS[0].receive(instruct);
 		}
 		else {
-			result = bc.free;
+			System.out.println("JUMPING: " + instruct[0]);
+			result = bc.free && isRsFree();
 			if (result)
 				bc.read(instruct);
 		}
