@@ -112,9 +112,9 @@ public class Simulator {
 		{
 
 			int [] instruct = instructMem[i];
-			System.out.println("Before: " + instruct[0] + " " +
+			/*System.out.println("Before: " + instruct[0] + " " +
 					instruct[1] + " " + instruct[2] + 
-					" " + instruct[3]);
+					" " + instruct[3]);*/
 
 			// If it is an overwrite 
 
@@ -314,8 +314,8 @@ public class Simulator {
 			//result = iau.free;
 			//if (result)
 				//iau.read(instruct[0], instruct[1], instruct[2], instruct[3]);
-			System.out.println("Sent : " + instruct[0] + " " + instruct[1] + " " 
-				+ instruct[2] + " " + instruct[3] + " to " + nextIAU);
+			//System.out.println("Sent : " + instruct[0] + " " + instruct[1] + " " 
+				//+ instruct[2] + " " + instruct[3] + " to " + nextIAU);
 			result = iauRS[getIAU()].receive(instruct);
 		}
 		else {
@@ -411,7 +411,7 @@ public class Simulator {
 			//System.out.println("PC: " + PC);
 			rsFree = isRsFree();
 		}
-		System.out.println("Halting " + iauRS[0].isFree());
+		//System.out.println("Halting " + iauRS[0].isFree());
 	}
 	
 	int getNWay()
