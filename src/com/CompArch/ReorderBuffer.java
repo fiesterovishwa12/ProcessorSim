@@ -5,6 +5,7 @@ public class ReorderBuffer {
 	private int dest[];
 	private int result[];
 	private boolean valid[];
+	private int branch[];
 	
 	// Logs if instruction is overwriting a particular register's value (for register renaming)
 	private int overWrite[];
@@ -24,6 +25,7 @@ public class ReorderBuffer {
 		result = new int [length];
 		valid = new boolean [length];
 		overWrite = new int [length];
+		branch = new int [length];
 		for (int i = 0; i < length; i++)
 		{
 			valid[i] = false;
@@ -39,8 +41,8 @@ public class ReorderBuffer {
 	void printBuffer ()
 	{
 		System.out.println("REORDER BUFFER");
-		int pos = head;
-		while (pos != tail)
+		int pos = tail;
+		while (pos != head)
 		{
 			System.out.println(instruct[pos] + " " + dest[pos] + " " + result[pos]);
 			pos++;
@@ -98,4 +100,36 @@ public class ReorderBuffer {
 				break;
 		}
 	}
+
+	// Takes a branch value, flushes any value within it
+	void flush (int br)
+	{
+		int pos = tail;
+		int pos2 = pos;
+		while (pos != head)
+		{
+			pos = pos % instruct.length;
+			pos2 = pos2 % instruct.length;
+			boolean over = branch[pos] == br;
+			if (over)
+			{
+				pos2++;
+				pos2 = pos2 % instruct.length;
+				head--;
+				head = head % instruct.length;
+			}
+			instruct[pos] = instruct[pos2];
+			dest[pos] = dest[pos2];
+			result[pos] = result[pos2];
+			valid[pos] = valid[pos2];
+			overWrite[pos] = overWrite[pos2];
+			branch[pos] = branch[pos2];
+			if (!over)
+			{
+				pos++;
+				pos2++;
+			}
+		}
+	}
+
 }
