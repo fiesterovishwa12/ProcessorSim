@@ -339,19 +339,7 @@ public class Simulator {
 	{
 		
 		int result = -1;
-		/*nextIAU = 0;
-		if (!iauRS[nextIAU].canWrite())
-		{
-			System.out.println("No");
-			System.out.println("1: " + iauRS[0].isFree());
-			//System.out.println("2: " + iauRS[1].isFree());
-			nextIAU++;
 
-			return -1;
-			//nextIAU++;
-		}
-		else
-			return 0;*/
 		for (int i = 0; i < iauRS.length; i++)
 		{
 			
@@ -429,37 +417,39 @@ public class Simulator {
 
 	void testFlush ()
 	{
-		/*
-	               System.out.println("TESTING DAT FLUSH");
-	               int [] instruct = {1, 1, 1, 1};
-	               iauRS[0].receive(instruct, -1);
-	               instruct[0] = 2;
-	               iauRS[0].receive(instruct, -1);
-	               instruct[0] = 3;
-	               iauRS[0].receive(instruct, -1);
-	               instruct[0] = 4;
-	               iauRS[0].receive(instruct, -1);
-	               iauRS[0].printContents();
 
-	               iauRS[0].flush(1);
-	               System.out.println("FLUSHED!");
-	              iauRS[0].printContents();
-		 */
-
-		/*
-	               iauRS[0].eu.read(3, 1, 1, 1, 1, 1);
-	               iauRS[0].eu.print();
-	               iauRS[0].flush(1);
-	              iauRS[0].eu.print();
-		 */
-		int [] instruct = {1, 2, 1, 1};
-		rob.insert(instruct, -1,-1);
+		System.out.println("TESTING THE FLUSH");
+		int [] instruct = {1, 1, 1, 1};
+		iauRS[0].receive(instruct, -1);
 		instruct[0] = 2;
-		rob.insert(instruct, -1,-1);
+		iauRS[0].receive(instruct, -1);
 		instruct[0] = 3;
-		rob.insert(instruct, -1,-1);
+		iauRS[0].receive(instruct, -1);
 		instruct[0] = 4;
-		rob.insert(instruct, -1,-1);
+		iauRS[0].receive(instruct, -1);
+		iauRS[0].printContents();
+
+		iauRS[0].flush(1);
+		System.out.println("FLUSHED:");
+		iauRS[0].printContents();
+
+		System.out.println("--------------------");
+
+		iauRS[0].eu.read(3, 1, 1, 1, 1, 1);
+		iauRS[0].eu.print();
+		iauRS[0].flush(1);
+		iauRS[0].eu.print();
+		
+        System.out.println("--------------------");
+
+		int [] instruct2 = {1, 2, 1, 1};
+		rob.insert(instruct2, -1,-1);
+		instruct2[0] = 2;
+		rob.insert(instruct2, -1,-1);
+		instruct2[0] = 3;
+		rob.insert(instruct2, -1,-1);
+		instruct2[0] = 4;
+		rob.insert(instruct2, -1,-1);
 		rob.printBuffer();
 		rob.flush(1);
 		rob.printBuffer();
