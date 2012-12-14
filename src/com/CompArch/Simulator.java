@@ -191,7 +191,7 @@ public class Simulator {
 		for (int i = 0; i < memManRS.length; i++)
 			memManRS[i].tick();
 		
-		bc.tick();
+		//bc.tick();
 		rob.tick();
 	}
 	
@@ -328,6 +328,10 @@ public class Simulator {
 			result = bc.read(instruct);
 		}
 		
+		if(result)
+			System.out.println("Doing: " + instruct[0] + " " + instruct[1] 
+					+ " " + instruct[2] + " " + instruct[3]);
+		
 		return result;
 	}	
 	
@@ -377,6 +381,7 @@ public class Simulator {
 		{
 			if (!memManRS[i].isFree())
 				result = false;
+			bc.tick();
 		}
 		return result;
 	}
@@ -392,6 +397,7 @@ public class Simulator {
 			{
 				boolean next = false;
 				next = fetch(instructMem[PC]);
+				System.out.println("AT " + i);
 				boolean isIAU = (instructMem[PC][0] < 17 && instructMem[PC][0] > 2);
 				if (next)
 				{
@@ -404,8 +410,8 @@ public class Simulator {
 				}
 				if (!isIAU)
 				{
-					//System.out.println("NOT IAU");
-					//System.out.println("PC: " + PC);
+					System.out.println("NOT IAU");
+					System.out.println("PC: " + PC);
 					break;
 				}
 			}
