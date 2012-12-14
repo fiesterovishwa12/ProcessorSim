@@ -31,6 +31,24 @@ public class ReorderBuffer {
 		}
 	}
 	
+	boolean isFree()
+	{
+		return head == tail;
+	}
+	
+	void printBuffer ()
+	{
+		System.out.println("REORDER BUFFER");
+		int pos = head;
+		while (pos != tail)
+		{
+			System.out.println(instruct[pos] + " " + dest[pos] + " " + result[pos]);
+			pos++;
+			if (pos >= size)
+				pos = 0;
+		}
+	}
+	
 	void setResult (int index, int val)
 	{
 		result[index] = val;

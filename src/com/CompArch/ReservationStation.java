@@ -52,20 +52,23 @@ public class ReservationStation {
 	// Takes instruction, returns true if added to buffer, false if buffer full
 	public boolean receive (int[] instruct)
 	{
-		if (total == depth)
+		
+		// Check to see if can add instruction to the buffer
+		
+		if (total >= depth || instruct[0] == 0)
 		{
 			return false;
 		}
 		
 		total++;
 		
-		// Where to add instruction
+		// Where to add instruction in buffer
 		int dest = (next + total - 1) % depth;
 		
 		// If it is an overwrite 
 		boolean isOverwrite = instruct[0] == 1;
 
-		// immediate operators
+		// If its opcode is an immediate operator
 		boolean isIm = (instruct[0] == 3 || instruct[0] == 9 
 				|| instruct[0] == 11 || instruct[0] == 16);
 
@@ -104,24 +107,48 @@ public class ReservationStation {
 		
 		if (out[0] < 19)
 		{
-			System.out.println(out[0] + " " + out[1] + " " + out[2] + " " + out[3]);
+			System.out.println("New val:" + out[0] + " " + out[1] + " " + out[2] + " " + out[3]);
 			sim.regFile.issue(out[1]);
 		}
+		
+		
+		if (instruct[0] == 2)
+			System.out.println("WRITING " + out[1] + " val(" + sim.regFile.get(out[1]) + ") OUT TO " + out[2]);
 
 		// Write to instruction buffer
 		instructBuffer[dest] = out;
 		
 		// Add instruction to the reorder buffer
 		robLoc[dest] = sim.rob.insert(out, overWrite);
+		
+		printContents();
 
 		return true;
+	}
+	
+	private void printContents()
+	{
+		System.out.println("RESERVATION STATION " + total);
+
+		int toPrint = next;
+
+		for (int i = 0; i < total; i++)
+		{
+			System.out.println(instructBuffer[toPrint][0] + " " + instructBuffer[toPrint][1]
+					+ " " + instructBuffer[toPrint][2] + " " + instructBuffer[toPrint][3]);
+			toPrint++;
+			if (toPrint >= depth)
+				toPrint = 0;
+		}
+
+		System.out.println("-----");
 	}
 	
 	public void tick ()
 	{
 		for (int i = 0; i<instructBuffer.length; i++)
 		{
-			System.out.println(instructBuffer[i][0]);
+			//System.out.println(instructBuffer[i][0]);
 		}
 		this.dispatch();
 		eu.tick();
@@ -184,7 +211,11 @@ public class ReservationStation {
 			next++;
 			next = next % depth;
 			total--;
+			System.out.println("Outgoing");
+			printContents();
 		}
+
+
 		
 		//System.out.println("---");
 			

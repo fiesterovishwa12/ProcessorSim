@@ -47,7 +47,7 @@ public class Simulator {
 		//System.out.println("Launching simulator");
 		//System.out.println("Running program");
 
-		Simulator sim = new Simulator(100,100,200,2);
+		Simulator sim = new Simulator(100,100,200,1);
 
 		File file = new File(args[0]);
 
@@ -176,7 +176,7 @@ public class Simulator {
 		cycleTotal++;
 		for (int i = 0; i < iauRS.length; i++)
 		{
-			System.out.println("RS " + i);
+			//System.out.println("RS " + i);
 			iauRS[i].tick();
 		}
 		
@@ -295,7 +295,10 @@ public class Simulator {
 		// Memory load
 		if (instruct[0] <= 2)
 		{
-			result = memManRS[0].receive(instruct);
+			if (isRsFree())
+				result = memManRS[0].receive(instruct);
+			else
+				return false;
 			//mem(instruct);
 		}	
 		
@@ -304,24 +307,16 @@ public class Simulator {
 		else if (instruct[0] <= 16) {
 			
 			// IAU OPERATIONS
-			if (!isRsFree())
-			{
-				System.out.println("No");
-				System.out.println("1: " + iauRS[0].isFree());
-				System.out.println("2: " + iauRS[1].isFree());
-
+			int to = getIAU();
+			
+			if (to == -1)
 				return false;
-				//nextIAU++;
-			}
 			//result = iau.free;
 			//if (result)
 				//iau.read(instruct[0], instruct[1], instruct[2], instruct[3]);
 			System.out.println("Sent : " + instruct[0] + " " + instruct[1] + " " 
 				+ instruct[2] + " " + instruct[3] + " to " + nextIAU);
-			result = iauRS[nextIAU].receive(instruct);
-			nextIAU++;
-			if (nextIAU >= iauRS.length)
-				nextIAU = 0;
+			result = iauRS[getIAU()].receive(instruct);
 		}
 		else {
 			// Handle branch
@@ -333,6 +328,38 @@ public class Simulator {
 		
 		return result;
 	}	
+	
+	int getIAU()
+	{
+		
+		int result = -1;
+		/*nextIAU = 0;
+		if (!iauRS[nextIAU].canWrite())
+		{
+			System.out.println("No");
+			System.out.println("1: " + iauRS[0].isFree());
+			//System.out.println("2: " + iauRS[1].isFree());
+			nextIAU++;
+
+			return -1;
+			//nextIAU++;
+		}
+		else
+			return 0;*/
+		for (int i = 0; i < iauRS.length; i++)
+		{
+			
+			if (iauRS[nextIAU].isFree())
+			{
+				result = nextIAU;
+				break;
+			}
+			nextIAU++;
+			if (nextIAU >= iauRS.length)
+				nextIAU = 0;
+		}
+		return result;
+	}
 	
 	// Are reservation stations free?
 	
@@ -358,7 +385,9 @@ public class Simulator {
 		// check if any reservation stations are free
 		boolean rsFree = isRsFree();
 		
-		while (instructMem[PC][0] != 0 || !rsFree /* !iau.free */|| !bc.free) {
+		while (instructMem[PC][0] != 0 || !rsFree || !bc.free || !rob.isFree()) {
+			if (!rob.isFree())
+				rob.printBuffer();
 			boolean next = false;
 			//if (rsFree && bc.free)
 				next = fetch(instructMem[PC]);
