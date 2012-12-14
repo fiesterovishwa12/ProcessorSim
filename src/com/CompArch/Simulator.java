@@ -47,7 +47,7 @@ public class Simulator {
 		//System.out.println("Launching simulator");
 		//System.out.println("Running program");
 
-		Simulator sim = new Simulator(100,100,200,2);
+		Simulator sim = new Simulator(100,100,200,4);
 
 		File file = new File(args[0]);
 

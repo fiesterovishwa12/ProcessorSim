@@ -153,16 +153,16 @@ public class ReservationStation {
 	
 	void dispatch ()
 	{
+		if (!eu.isFree() || total == 0)
+			return;
+		
 		boolean depends = false;
 
 		int [] instruct = instructBuffer[next];
 		// immediate operators
 		boolean isIm = (instruct[0] == 3 || instruct[0] == 9 
 				|| instruct[0] == 11 || instruct[0] == 16);
-		if (instruct[0] == 7)
-		{
-			System.out.println("IS IT READY?");
-		}
+
 		if (!sim.regFile.isFree(instruct[2]))
 		{
 			depends = true;
@@ -176,7 +176,7 @@ public class ReservationStation {
 				//System.out.println("Waiting on: " + instruct[2]);
 			}
 
-		if (eu.isFree() && total > 0 && !depends)
+		if (!depends)
 		{
 			
 			eu.read(instructBuffer[next][0], instructBuffer[next][1], instructBuffer[next][2], 
