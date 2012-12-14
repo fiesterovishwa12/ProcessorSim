@@ -14,6 +14,9 @@ public class ReservationStation {
 	// Instruction memory section
 	private int[][] instructBuffer;
 	
+	// If the instruction is dependent on a branch predict give id, else -1
+	private int[] branch;
+	
 	// Location of each instruction in the reorder buffer
 	private int robLoc[];
 	
@@ -39,18 +42,21 @@ public class ReservationStation {
 		next = 0;
 		total = 0;
 		instructBuffer = new int[size][4];
+		branch = new int[size];
 		robLoc = new int[size];
 		eu = e;
 		available = new boolean[size][2];
+		
 		for (int i = 0; i < size; i++) {
 			available[i][0] = false;
 			available[i][1] = false;
+			branch[i] = -1;
 		}
 		sim = s;
 	}
 	
 	// Takes instruction, returns true if added to buffer, false if buffer full
-	public boolean receive (int[] instruct)
+	public boolean receive (int[] instruct, int br)
 	{
 		// Check to see if can add instruction to the buffer
 		
@@ -110,6 +116,9 @@ public class ReservationStation {
 		
 		// Write to instruction buffer
 		instructBuffer[dest] = out;
+		
+		// Store what branch
+		branch[dest] = br;
 		
 		// Add instruction to the reorder buffer
 		robLoc[dest] = sim.rob.insert(out, overWrite);

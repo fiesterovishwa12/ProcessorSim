@@ -7,6 +7,11 @@ import java.io.IOException;
 
 public class Simulator {
 	
+	BranchPredictor bp;
+	
+	// The id of the current branch being executed
+	int branch = -1;
+	
 	// Used for output
 	int maxReg = 0;
 	int maxMem = 0;
@@ -157,7 +162,10 @@ public class Simulator {
 		
 		bc = new BranchController(this);
 		
-	
+		// Set up branch predictor
+		
+		bp = new ForwardBackBranchPredictor(this);
+		
 		// Set up registers
 		PC = 0;
 		instructMem = new int[instructions][4];
@@ -296,7 +304,7 @@ public class Simulator {
 		if (instruct[0] <= 2)
 		{
 			if (isRsFree())
-				result = memManRS[0].receive(instruct);
+				result = memManRS[0].receive(instruct,branch);
 			else
 				return false;
 			//mem(instruct);
@@ -311,19 +319,13 @@ public class Simulator {
 			
 			if (to == -1)
 				return false;
-			//result = iau.free;
-			//if (result)
-				//iau.read(instruct[0], instruct[1], instruct[2], instruct[3]);
-			//System.out.println("Sent : " + instruct[0] + " " + instruct[1] + " " 
-				//+ instruct[2] + " " + instruct[3] + " to " + nextIAU);
-			result = iauRS[getIAU()].receive(instruct);
+			
+			result = iauRS[getIAU()].receive(instruct,branch);
 		}
 		else {
 			// Handle branch
-			
-			result = bc.free && isRsFree();
-			if (result)
-				bc.read(instruct);
+			System.out.println("Branching :" + bp.branches(PC, instruct));
+			result = bc.read(instruct);
 		}
 		
 		return result;

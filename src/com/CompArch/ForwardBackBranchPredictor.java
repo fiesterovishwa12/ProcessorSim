@@ -16,7 +16,7 @@ public class ForwardBackBranchPredictor extends BranchPredictor{
 		else if (instruct[0] == 19)
 			val = instruct[1];
 		
-		if (val > 0)
+		if (val >= 0)
 			return false;
 		else
 			return true;
