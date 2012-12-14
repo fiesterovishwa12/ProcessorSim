@@ -80,17 +80,22 @@ public class ReorderBuffer {
 	
 	void tick()
 	{
-		//Check if current instruction is valid, if so then write it and move on to the next
-		if (valid[tail])
+		for (int i = 0; i < sim.getNWay(); i++)
 		{
-			sim.regFile.set(dest[tail], result[tail]);
-			//System.out.println("WROTE TO: " + dest[tail] + " : " + result[tail]);
-			//System.out.println("FREEING: " + overWrite[tail]);
-			sim.rrt.free(overWrite[tail]);
-			valid[tail] = false;
-			tail++;
-			if (tail >= size)
-				tail = 0;
+			//Check if current instruction is valid, if so then write it and move on to the next
+			if (valid[tail])
+			{
+				sim.regFile.set(dest[tail], result[tail]);
+				//System.out.println("WROTE TO: " + dest[tail] + " : " + result[tail]);
+				//System.out.println("FREEING: " + overWrite[tail]);
+				sim.rrt.free(overWrite[tail]);
+				valid[tail] = false;
+				tail++;
+				if (tail >= size)
+					tail = 0;
+			}
+			else
+				break;
 		}
 	}
 }

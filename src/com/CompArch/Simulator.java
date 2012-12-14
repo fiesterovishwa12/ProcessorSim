@@ -47,7 +47,7 @@ public class Simulator {
 		//System.out.println("Launching simulator");
 		//System.out.println("Running program");
 
-		Simulator sim = new Simulator(100,100,200,2);
+		Simulator sim = new Simulator(100,100,200,1);
 
 		File file = new File(args[0]);
 
@@ -386,13 +386,26 @@ public class Simulator {
 		boolean rsFree = isRsFree();
 		
 		while (instructMem[PC][0] != 0 || !rsFree || !bc.free || !rob.isFree()) {
-			boolean next = false;
-			next = fetch(instructMem[PC]);
+			for (int i = 0; i < iauRS.length; i++)
+			{
+				boolean next = false;
+				next = fetch(instructMem[PC]);
+				boolean isIAU = (instructMem[PC][0] < 17 && instructMem[PC][0] > 2);
+				if (next)
+					PC++;
+				else
+					break;
+				if (!isIAU)
+					break;
+			}
 			tick();
 			rsFree = isRsFree();
-			if (next)
-				PC++;
 		}
 		System.out.println("Halting " + iauRS[0].isFree());
+	}
+	
+	int getNWay()
+	{
+		return iauRS.length;
 	}
 }
