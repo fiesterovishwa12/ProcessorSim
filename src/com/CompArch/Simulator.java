@@ -47,7 +47,7 @@ public class Simulator {
 		//System.out.println("Launching simulator");
 		//System.out.println("Running program");
 
-		Simulator sim = new Simulator(100,100,200,1);
+		Simulator sim = new Simulator(100,100,200,2);
 
 		File file = new File(args[0]);
 
@@ -303,7 +303,7 @@ public class Simulator {
 		}	
 		
 		
-		// IAU instructions - TODO currently all sent to one RS
+		// IAU instructions
 		else if (instruct[0] <= 16) {
 			
 			// IAU OPERATIONS
@@ -386,11 +386,8 @@ public class Simulator {
 		boolean rsFree = isRsFree();
 		
 		while (instructMem[PC][0] != 0 || !rsFree || !bc.free || !rob.isFree()) {
-			if (!rob.isFree())
-				rob.printBuffer();
 			boolean next = false;
-			//if (rsFree && bc.free)
-				next = fetch(instructMem[PC]);
+			next = fetch(instructMem[PC]);
 			tick();
 			rsFree = isRsFree();
 			if (next)

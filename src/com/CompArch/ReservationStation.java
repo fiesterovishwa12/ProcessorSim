@@ -52,7 +52,6 @@ public class ReservationStation {
 	// Takes instruction, returns true if added to buffer, false if buffer full
 	public boolean receive (int[] instruct)
 	{
-		
 		// Check to see if can add instruction to the buffer
 		
 		if (total >= depth || instruct[0] == 0)
@@ -105,7 +104,7 @@ public class ReservationStation {
 			out[1] = sim.rrt.newReg(instruct[1]);
 		}
 		
-		if (out[0] < 19)
+		if (out[0] < 17)
 		{
 			System.out.println("New val:" + out[0] + " " + out[1] + " " + out[2] + " " + out[3]);
 			sim.regFile.issue(out[1]);
@@ -121,7 +120,7 @@ public class ReservationStation {
 		// Add instruction to the reorder buffer
 		robLoc[dest] = sim.rob.insert(out, overWrite);
 		
-		printContents();
+		//printContents();
 
 		return true;
 	}
@@ -162,7 +161,10 @@ public class ReservationStation {
 		// immediate operators
 		boolean isIm = (instruct[0] == 3 || instruct[0] == 9 
 				|| instruct[0] == 11 || instruct[0] == 16);
-		
+		if (instruct[0] == 7)
+		{
+			System.out.println("IS IT READY?");
+		}
 		if (!sim.regFile.isFree(instruct[2]))
 		{
 			depends = true;
@@ -175,50 +177,18 @@ public class ReservationStation {
 				depends = true;
 				//System.out.println("Waiting on: " + instruct[2]);
 			}
-
-		depends = false;
-
-		// perform dependancy and eu availability checking, if ready then send
-		/*System.out.println(instructBuffer[next][0] + " " + instructBuffer[next][1] + " " + 
-				instructBuffer[next][2] + " " + instructBuffer[next][3]);*/
-		
-		/*
-		if (!sim.regFile.isFree(instructBuffer[next][2]))
-		{
-			depends = true;
-			System.out.println(instructBuffer[next][2] + " NOT FREE1");
-		}
-		int in = instructBuffer[next][0];
-		if (in != 3 && in != 9 && in != 11 && in != 13 && in != 14 && in != 16)
-		{
-			if (!sim.regFile.isFree(instructBuffer[next][3]))
-			{
-				depends = true;
-				System.out.println(instructBuffer[next][3] + " NOT FREE2");
-			}
-		}
-		depends = false;*/
 		
 		if (eu.isFree() && total > 0 && !depends)
 		{
-			//System.out.println(instructBuffer[next][2] + " " + instructBuffer[next][3] + " FREE");
-			/*System.out.println("WORKING: " + total);
-			System.out.println("running: " + instructBuffer[next][0] + " " + instructBuffer[next][1]
-					+ " " + instructBuffer[next][2] + " " + instructBuffer[next][3]);*/
 			
 			eu.read(instructBuffer[next][0], instructBuffer[next][1], instructBuffer[next][2], 
 					instructBuffer[next][3], robLoc[next]);
 			next++;
 			next = next % depth;
 			total--;
-			System.out.println("Outgoing");
-			printContents();
+			//System.out.println("Outgoing");
+			//printContents();
 		}
-
-
-		
-		//System.out.println("---");
-			
 	}
 	
 	
