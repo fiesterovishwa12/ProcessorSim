@@ -25,7 +25,7 @@ public class MemoryManager extends ExecutionUnit{
 	}
 
 	@Override
-	public void read(int instruct, int r1, int r2, int r3, int d) {
+	public void read(int instruct, int r1, int r2, int r3, int d, int br) {
 		dest = d;
 		int[] in = {instruct,r1,r2,r3};
 		mem(in);
@@ -54,6 +54,18 @@ public class MemoryManager extends ExecutionUnit{
 				sim.maxMem = sim.regFile.get(instruct[2]) + instruct[3];
 		}
 		sim.rob.setResult(dest, val);
+		
+	}
+
+	@Override
+	public void flush(int br) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void print() {
+		// TODO Auto-generated method stub
 		
 	}	
 

@@ -26,7 +26,7 @@ public class IAU extends ExecutionUnit {
 	
 	// Calculate the given command
 	@Override
-	public void read (int instruct, int r1, int r2, int r3, int d)
+	public void read (int instruct, int r1, int r2, int r3, int d, int br)
 	{
 		if (!free) {
 			System.out.println("Cannot execute instruction" + instruct + " "
@@ -134,5 +134,17 @@ public class IAU extends ExecutionUnit {
 	@Override
 	boolean isFree() {
 		return free;
+	}
+
+	@Override
+	public void flush(int br) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void print() {
+		// TODO Auto-generated method stub
+		
 	}
 }

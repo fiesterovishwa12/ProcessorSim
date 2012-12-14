@@ -219,7 +219,7 @@ public class ReservationStation {
 			if (!dependency(p))
 			{
 				eu.read(instructBuffer[next][0], instructBuffer[next][1], instructBuffer[next][2], 
-						instructBuffer[next][3], robLoc[next]);
+						instructBuffer[next][3], robLoc[next], -1);
 				remove(next);
 				
 				break;
