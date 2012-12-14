@@ -151,6 +151,29 @@ public class ReservationStation {
 		eu.tick();
 	}
 	
+	// adds an instruction to the buffer
+	void add (int [] instruct)
+	{
+		
+	}
+	
+	// removes instruction at position pos
+	void remove (int pos)
+	{
+		int c = pos + next;
+		if (c >= depth)
+			c = 0;
+		for (int i = pos; i < total; i++)
+		{
+			int d = c + 1;
+			if (d >= depth)
+				d = 0;
+			instructBuffer[c]=instructBuffer[d];
+			c = d;
+		}
+		total--;
+	}
+	
 	void dispatch ()
 	{
 		if (!eu.isFree() || total == 0)
@@ -178,14 +201,12 @@ public class ReservationStation {
 
 		if (!depends)
 		{
-			
 			eu.read(instructBuffer[next][0], instructBuffer[next][1], instructBuffer[next][2], 
 					instructBuffer[next][3], robLoc[next]);
-			next++;
-			next = next % depth;
-			total--;
-			//System.out.println("Outgoing");
-			//printContents();
+			remove(next);
+			//next++;
+			//next = next % depth;
+			//total--;
 		}
 	}
 	

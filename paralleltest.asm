@@ -2,7 +2,7 @@
 // Result:
 addim 1 1 2
 addim 2 1 18
-addim 5 1 28
+div 5 2 1
 addim 3 1 38
 addim 4 1 48
 //Memory writing
