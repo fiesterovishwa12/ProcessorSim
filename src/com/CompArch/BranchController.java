@@ -1,5 +1,7 @@
 package com.CompArch;
 
+import java.util.LinkedList;
+
 // A branch controlling unit
 
 public class BranchController {
@@ -9,12 +11,18 @@ public class BranchController {
 		int [] instruct;
 		boolean taken;
 		int PC;
+		
 		public BranchRecord(int in, int [] instruction, boolean take) {
 			id = in;
 			instruct = instruction;
 			taken = take;
 			PC = sim.PC;
 		}
+
+		LinkedList<BranchRecord> buffer = new LinkedList<BranchRecord>();
+
+		int nextID = 0;
+
 
 		public String toString() {
 			return "ID: " + id + ", Instruction: " + instruct[0] + " "
