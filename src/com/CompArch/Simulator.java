@@ -47,7 +47,7 @@ public class Simulator {
 		//System.out.println("Launching simulator");
 		//System.out.println("Running program");
 
-		Simulator sim = new Simulator(100,100,200,2);
+		Simulator sim = new Simulator(100,100,200,4);
 
 		File file = new File(args[0]);
 
@@ -112,9 +112,9 @@ public class Simulator {
 		{
 
 			int [] instruct = instructMem[i];
-			System.out.println("Before: " + instruct[0] + " " +
+			/*System.out.println("Before: " + instruct[0] + " " +
 					instruct[1] + " " + instruct[2] + 
-					" " + instruct[3]);
+					" " + instruct[3]);*/
 
 			// If it is an overwrite 
 
@@ -175,7 +175,10 @@ public class Simulator {
 	void tick () {
 		cycleTotal++;
 		for (int i = 0; i < iauRS.length; i++)
+		{
+			//System.out.println("RS " + i);
 			iauRS[i].tick();
+		}
 		
 		for (int i = 0; i < memManRS.length; i++)
 			memManRS[i].tick();
@@ -292,68 +295,71 @@ public class Simulator {
 		// Memory load
 		if (instruct[0] <= 2)
 		{
-			result = memManRS[0].receive(instruct);
+			if (isRsFree())
+				result = memManRS[0].receive(instruct);
+			else
+				return false;
 			//mem(instruct);
-		}
+		}	
 		
-		// IAU instructions - TODO currently all sent to one RS
+		
+		// IAU instructions
 		else if (instruct[0] <= 16) {
+			
+			// IAU OPERATIONS
+			int to = getIAU();
+			
+			if (to == -1)
+				return false;
 			//result = iau.free;
 			//if (result)
 				//iau.read(instruct[0], instruct[1], instruct[2], instruct[3]);
-			System.out.println("Sent : " + instruct[0] + " " + instruct[1] + " " 
-				+ instruct[2] + " " + instruct[3] + " to " + nextIAU);
-			result = iauRS[nextIAU].receive(instruct);
-			nextIAU++;
-			if (nextIAU >= iauRS.length)
-				nextIAU = 0;
+			//System.out.println("Sent : " + instruct[0] + " " + instruct[1] + " " 
+				//+ instruct[2] + " " + instruct[3] + " to " + nextIAU);
+			result = iauRS[getIAU()].receive(instruct);
 		}
 		else {
+			// Handle branch
+			
 			result = bc.free && isRsFree();
 			if (result)
 				bc.read(instruct);
 		}
 		
 		return result;
-	}
+	}	
 	
-	// Handles memory loads and writes
-	void mem(int[] instruct)
+	int getIAU()
 	{
 		
-		// is op an overwrite?
-		int overWrite = -1;
-		if (instruct[0] == 1)
+		int result = -1;
+		/*nextIAU = 0;
+		if (!iauRS[nextIAU].canWrite())
 		{
-			//overWrite = rrt.getReg(instruct[1]);
-			rrt.newReg(rrt.getReg(instruct[1]));
+			System.out.println("No");
+			System.out.println("1: " + iauRS[0].isFree());
+			//System.out.println("2: " + iauRS[1].isFree());
+			nextIAU++;
+
+			return -1;
+			//nextIAU++;
 		}
-		
-		int[] renamed = regRename(instruct);
-		//int[] renamed = instruct;
-		
-		int robIndex = rob.insert(renamed, overWrite);
-		
-		// Increment the clock for the memory access (cost - 1)
-		cycleTotal += 3;
-		if (instruct[0] == 1){
-			regFile.set(renamed[1], dataMem[regFile.get(renamed[2]) + renamed[3]]);
+		else
+			return 0;*/
+		for (int i = 0; i < iauRS.length; i++)
+		{
+			
+			if (iauRS[nextIAU].isFree())
+			{
+				result = nextIAU;
+				break;
+			}
+			nextIAU++;
+			if (nextIAU >= iauRS.length)
+				nextIAU = 0;
 		}
-		else if (instruct[0] == 2){
-			System.out.println(instruct[0] + " " + instruct[1] + " " + instruct[2] 
-					+ " " + instruct[3]);
-			System.out.println(renamed[0] + " " + renamed[1] + " " + renamed[2] 
-					+ " " + renamed[3]);
-			System.out.println("WRITE TO " + (regFile.get(renamed[2]) + renamed[3]));
-			printReg();
-			dataMem[regFile.get(renamed[2]) + renamed[3]] = regFile.get(renamed[1]);
-			// Increment max mem
-			if (regFile.get(renamed[2]) + renamed[3] > maxMem)
-				maxMem = regFile.get(renamed[2]) + renamed[3];
-		}
-		
-		rob.setResult(robIndex, 0);
-	}	
+		return result;
+	}
 	
 	// Are reservation stations free?
 	
@@ -379,15 +385,37 @@ public class Simulator {
 		// check if any reservation stations are free
 		boolean rsFree = isRsFree();
 		
-		while (instructMem[PC][0] != 0 || !rsFree /* !iau.free */|| !bc.free) {
-			boolean next = false;
-			if (rsFree && bc.free)
+		while (instructMem[PC][0] != 0 || !rsFree || !bc.free || !rob.isFree()) {
+			for (int i = 0; i < iauRS.length; i++)
+			{
+				boolean next = false;
 				next = fetch(instructMem[PC]);
+				boolean isIAU = (instructMem[PC][0] < 17 && instructMem[PC][0] > 2);
+				if (next)
+				{
+					PC++;
+				}
+				else
+				{
+					//System.out.println("NO TO " + instructMem[PC][0]);
+					break;
+				}
+				if (!isIAU)
+				{
+					//System.out.println("NOT IAU");
+					//System.out.println("PC: " + PC);
+					break;
+				}
+			}
 			tick();
+			//System.out.println("PC: " + PC);
 			rsFree = isRsFree();
-			if (next)
-				PC++;
 		}
-		System.out.println("Halting " + iauRS[0].isFree());
+		//System.out.println("Halting " + iauRS[0].isFree());
+	}
+	
+	int getNWay()
+	{
+		return iauRS.length;
 	}
 }

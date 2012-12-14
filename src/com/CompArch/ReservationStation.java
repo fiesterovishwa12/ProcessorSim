@@ -27,6 +27,11 @@ public class ReservationStation {
 		else
 			return true;
 	}
+	
+	public boolean canWrite()
+	{
+		return total < depth;
+	}
 
 	public ReservationStation (Simulator s, int size, ExecutionUnit e)
 	{
@@ -47,20 +52,25 @@ public class ReservationStation {
 	// Takes instruction, returns true if added to buffer, false if buffer full
 	public boolean receive (int[] instruct)
 	{
-		if (total == depth)
+		// Check to see if can add instruction to the buffer
+		
+		if (total >= depth || instruct[0] == 0)
 		{
 			return false;
 		}
 		
+		/*System.out.println("Before: " + instruct[0] + " " + instruct[1] 
+				+ " " + instruct[2] + " " + instruct[3]);*/
+		
 		total++;
 		
-		// Where to add instruction
+		// Where to add instruction in buffer
 		int dest = (next + total - 1) % depth;
 		
 		// If it is an overwrite 
 		boolean isOverwrite = instruct[0] == 1;
 
-		// immediate operators
+		// If its opcode is an immediate operator
 		boolean isIm = (instruct[0] == 3 || instruct[0] == 9 
 				|| instruct[0] == 11 || instruct[0] == 16);
 
@@ -70,8 +80,7 @@ public class ReservationStation {
 		isOverwrite = isOverwrite || (!isIm
 				&& instruct[0] > 2 && instruct[0] < 17 
 				&& (instruct[1] == instruct[2] ||
-				instruct[1] == instruct[3]));
-		
+				instruct[1] == instruct[3]));		
 		
 		// If the operation is self writing
 		boolean isSelfWrite = instruct[1] == instruct[2];
@@ -80,105 +89,133 @@ public class ReservationStation {
 		
 		int overWrite = -1;
 		
-		if (isOverwrite && sim.rrt.assigned(instruct[1]))
-		{
-				//System.out.println("REGISTER " + instruct[1]);
-				overWrite = sim.rrt.getReg(instruct[1]);
-				//System.out.println("OVERWRITING: " + overWrite);
-				int new1 = sim.rrt.newReg(instruct[1]);
-				//System.out.println("WITH: " + new1 + ":" + sim.rrt.getReg(instruct[1]));
-		}
-				
+		int new1 = instruct[1];
+		
 		int out[] = sim.regRename(instruct);
 		
-		if (isSelfWrite && !(isOverwrite && sim.rrt.assigned(instruct[1])))
+		
+		if (isSelfWrite  || (isOverwrite && sim.rrt.assigned(instruct[1])))
 		{
 			overWrite = out[1];
 			out[1] = sim.rrt.newReg(instruct[1]);
 		}
 		
-		if (out[0] < 19)
+		//System.out.println("New val:" + out[0] + " " + out[1] + " " + out[2] + " " + out[3]);
+
+		
+		if (out[0] < 17)
 		{
-			System.out.println(out[0] + " " + out[1] + " " + out[2] + " " + out[3]);
 			sim.regFile.issue(out[1]);
 		}
-
+		
 		// Write to instruction buffer
 		instructBuffer[dest] = out;
 		
 		// Add instruction to the reorder buffer
 		robLoc[dest] = sim.rob.insert(out, overWrite);
+		
+		//printContents();
 
 		return true;
 	}
 	
+	private void printContents()
+	{
+		System.out.println("RESERVATION STATION " + total);
+
+		int toPrint = next;
+
+		for (int i = 0; i < total; i++)
+		{
+			System.out.println(instructBuffer[toPrint][0] + " " + instructBuffer[toPrint][1]
+					+ " " + instructBuffer[toPrint][2] + " " + instructBuffer[toPrint][3]);
+			toPrint++;
+			if (toPrint >= depth)
+				toPrint = 0;
+		}
+
+		System.out.println("-----");
+	}
+	
 	public void tick ()
 	{
+		for (int i = 0; i<instructBuffer.length; i++)
+		{
+			//System.out.println(instructBuffer[i][0]);
+		}
 		this.dispatch();
 		eu.tick();
 	}
 	
-	void dispatch ()
+	// adds an instruction to the buffer
+	void add (int [] instruct)
+	{
+		
+	}
+	
+	// removes instruction at position pos
+	void remove (int pos)
+	{
+		int c = pos + next;
+		if (c >= depth)
+			c = 0;
+		for (int i = pos; i < total; i++)
+		{
+			int d = c + 1;
+			if (d >= depth)
+				d = 0;
+			instructBuffer[c]=instructBuffer[d];
+			// Location of each instruction in the reorder buffer
+			robLoc[c] = robLoc[d];
+			
+			available[c] = available[d];
+			
+			c = d;
+		}
+		total--;
+	}
+	
+	boolean dependency (int in)
 	{
 		boolean depends = false;
 
-		int [] instruct = instructBuffer[next];
+		int [] instruct = instructBuffer[in];
 		// immediate operators
 		boolean isIm = (instruct[0] == 3 || instruct[0] == 9 
 				|| instruct[0] == 11 || instruct[0] == 16);
-		
+
 		if (!sim.regFile.isFree(instruct[2]))
-		{
 			depends = true;
-			System.out.println("Waiting on: " + instruct[1]);
-		}
 
 		if (!isIm && instruct[0] > 2 && instruct[0] < 17 )
 			if (!sim.regFile.isFree(instruct[3]))
-			{
 				depends = true;
-				//System.out.println("Waiting on: " + instruct[2]);
-			}
-
-		depends = false;
-
-		// perform dependancy and eu availability checking, if ready then send
-		/*System.out.println(instructBuffer[next][0] + " " + instructBuffer[next][1] + " " + 
-				instructBuffer[next][2] + " " + instructBuffer[next][3]);*/
 		
-		/*
-		if (!sim.regFile.isFree(instructBuffer[next][2]))
+		return depends;
+	}
+	
+	void dispatch ()
+	{
+		if (!eu.isFree() || total == 0)
+			return;
+		
+		int p = next;
+		
+		for (int i = 0; i<1; i++)
 		{
-			depends = true;
-			System.out.println(instructBuffer[next][2] + " NOT FREE1");
-		}
-		int in = instructBuffer[next][0];
-		if (in != 3 && in != 9 && in != 11 && in != 13 && in != 14 && in != 16)
-		{
-			if (!sim.regFile.isFree(instructBuffer[next][3]))
+			p = next + i;
+			if (p >= depth)
+				p = 0;
+				
+			if (!dependency(p))
 			{
-				depends = true;
-				System.out.println(instructBuffer[next][3] + " NOT FREE2");
+				eu.read(instructBuffer[next][0], instructBuffer[next][1], instructBuffer[next][2], 
+						instructBuffer[next][3], robLoc[next]);
+				remove(next);
+				
+				break;
 			}
 		}
-		depends = false;*/
-		
-		if (eu.isFree() && total > 0 && !depends)
-		{
-			//System.out.println(instructBuffer[next][2] + " " + instructBuffer[next][3] + " FREE");
-			/*System.out.println("WORKING: " + total);
-			System.out.println("running: " + instructBuffer[next][0] + " " + instructBuffer[next][1]
-					+ " " + instructBuffer[next][2] + " " + instructBuffer[next][3]);*/
-			
-			eu.read(instructBuffer[next][0], instructBuffer[next][1], instructBuffer[next][2], 
-					instructBuffer[next][3], robLoc[next]);
-			next++;
-			next = next % depth;
-			total--;
-		}
-		
-		//System.out.println("---");
-			
 	}
 	
 	

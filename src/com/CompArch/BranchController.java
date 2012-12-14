@@ -40,18 +40,18 @@ public class BranchController {
 		case 17:
 			if (sim.regFile.get(renamed[1]) == sim.regFile.get(renamed[2])) {
 				free = false;
-				out = sim.PC + renamed[3];
+				out = renamed[3];
 			}
 			break;
 		case 18:
 			if (sim.regFile.get(renamed[1]) != sim.regFile.get(renamed[2])) {
 				free = false;
-				out = sim.PC + renamed[3];
+				out = renamed[3];
 			}
 			break;
 		case 19:
 			free = false;
-			out = sim.PC + renamed[1];
+			out = renamed[1];
 			break;
 		default:
 			System.out.println("Branch Controller: Invalid instruction: " + renamed[0]);
@@ -64,7 +64,8 @@ public class BranchController {
 	{
 		if (free)
 			return;
-		sim.PC = out;
+		sim.PC += out;
+		out = 0;
 		free = true;
 	}
 

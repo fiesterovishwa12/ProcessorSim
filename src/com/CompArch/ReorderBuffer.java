@@ -31,6 +31,24 @@ public class ReorderBuffer {
 		}
 	}
 	
+	boolean isFree()
+	{
+		return head == tail;
+	}
+	
+	void printBuffer ()
+	{
+		System.out.println("REORDER BUFFER");
+		int pos = head;
+		while (pos != tail)
+		{
+			System.out.println(instruct[pos] + " " + dest[pos] + " " + result[pos]);
+			pos++;
+			if (pos >= size)
+				pos = 0;
+		}
+	}
+	
 	void setResult (int index, int val)
 	{
 		result[index] = val;
@@ -62,17 +80,22 @@ public class ReorderBuffer {
 	
 	void tick()
 	{
-		//Check if current instruction is valid, if so then write it and move on to the next
-		if (valid[tail])
+		for (int i = 0; i < sim.getNWay(); i++)
 		{
-			sim.regFile.set(dest[tail], result[tail]);
-			//System.out.println("WROTE TO: " + dest[tail] + " : " + result[tail]);
-			//System.out.println("FREEING: " + overWrite[tail]);
-			sim.rrt.free(overWrite[tail]);
-			valid[tail] = false;
-			tail++;
-			if (tail >= size)
-				tail = 0;
+			//Check if current instruction is valid, if so then write it and move on to the next
+			if (valid[tail])
+			{
+				sim.regFile.set(dest[tail], result[tail]);
+				//System.out.println("WROTE TO: " + dest[tail] + " : " + result[tail]);
+				//System.out.println("FREEING: " + overWrite[tail]);
+				sim.rrt.free(overWrite[tail]);
+				valid[tail] = false;
+				tail++;
+				if (tail >= size)
+					tail = 0;
+			}
+			else
+				break;
 		}
 	}
 }
