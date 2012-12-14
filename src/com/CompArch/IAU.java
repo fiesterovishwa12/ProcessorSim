@@ -16,6 +16,10 @@ public class IAU extends ExecutionUnit {
 	// If ALU is available
 	boolean free;
 	
+	// Branch id of current operation
+	private int branch;
+
+	
 	IAU (Simulator s)
 	{
 		super(s);
@@ -33,6 +37,8 @@ public class IAU extends ExecutionUnit {
 					+ r1 + " " + r2 + " " + r3 + ", busy");
 			return;
 		}
+		branch = br;
+		
 		dest = d;
 		//dest = r1;
 		free = false;
@@ -138,13 +144,16 @@ public class IAU extends ExecutionUnit {
 
 	@Override
 	public void flush(int br) {
-		// TODO Auto-generated method stub
-		
+		if (br == branch)
+		{
+			cycles = 0;
+			free = true;
+		}
+
 	}
 
 	@Override
 	public void print() {
-		// TODO Auto-generated method stub
-		
+		System.out.println(cycles);		
 	}
 }
