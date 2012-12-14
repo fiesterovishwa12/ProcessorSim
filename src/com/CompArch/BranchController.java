@@ -19,10 +19,6 @@ public class BranchController {
 			PC = sim.PC;
 		}
 
-		LinkedList<BranchRecord> buffer = new LinkedList<BranchRecord>();
-
-		int nextID = 0;
-
 
 		public String toString() {
 			return "ID: " + id + ", Instruction: " + instruct[0] + " "
@@ -30,6 +26,12 @@ public class BranchController {
 							+ ", Taken: " + taken + ", PC: " + PC + "\n";
 		}
 	}
+	
+	boolean tagged = false;
+
+	LinkedList<BranchRecord> buffer = new LinkedList<BranchRecord>();
+
+	int nextID = 0;
 
 	
 	Simulator sim;
@@ -65,6 +67,14 @@ public class BranchController {
 			System.out.println("Branch Controller: Cannot execute instruction " + instruct[0] + " "
 					+ instruct[1] + " " + instruct[2] + " " + instruct[3] + ", dependencies");
 			System.out.println("SPECULATING " + sim.bp.branches(sim.PC, instruct));
+			if (!tagged )
+			{
+				buffer.add(new BranchRecord(nextID, renamed,sim.bp.branches(sim.PC, instruct)));
+				tagged = true;
+				sim.branch = nextID;
+				nextID++;
+			}
+
 			return false;
 		}
 		/*System.out.println("After: " + renamed[0] + " " +
