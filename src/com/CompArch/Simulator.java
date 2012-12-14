@@ -421,9 +421,49 @@ public class Simulator {
 		}
 		//System.out.println("Halting " + iauRS[0].isFree());
 	}
-	
+
 	int getNWay()
 	{
 		return iauRS.length;
 	}
+
+	void testFlush ()
+	{
+		/*
+	               System.out.println("TESTING DAT FLUSH");
+	               int [] instruct = {1, 1, 1, 1};
+	               iauRS[0].receive(instruct, -1);
+	               instruct[0] = 2;
+	               iauRS[0].receive(instruct, -1);
+	               instruct[0] = 3;
+	               iauRS[0].receive(instruct, -1);
+	               instruct[0] = 4;
+	               iauRS[0].receive(instruct, -1);
+	               iauRS[0].printContents();
+
+	               iauRS[0].flush(1);
+	               System.out.println("FLUSHED!");
+	              iauRS[0].printContents();
+		 */
+
+		/*
+	               iauRS[0].eu.read(3, 1, 1, 1, 1, 1);
+	               iauRS[0].eu.print();
+	               iauRS[0].flush(1);
+	              iauRS[0].eu.print();
+		 */
+		int [] instruct = {1, 2, 1, 1};
+		rob.insert(instruct, -1,-1);
+		instruct[0] = 2;
+		rob.insert(instruct, -1,-1);
+		instruct[0] = 3;
+		rob.insert(instruct, -1,-1);
+		instruct[0] = 4;
+		rob.insert(instruct, -1,-1);
+		rob.printBuffer();
+		rob.flush(1);
+		rob.printBuffer();
+	}
+
+
 }

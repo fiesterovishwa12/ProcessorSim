@@ -3,7 +3,7 @@ package com.CompArch;
 public class ReservationStation {
 
 	private Simulator sim;
-	private ExecutionUnit eu;
+	ExecutionUnit eu;
 	
 	private int depth;
 	
@@ -95,7 +95,7 @@ public class ReservationStation {
 		
 		int overWrite = -1;
 		
-		int new1 = instruct[1];
+		//int new1 = instruct[1];
 		
 		int out[] = sim.regRename(instruct);
 		
@@ -128,7 +128,7 @@ public class ReservationStation {
 		return true;
 	}
 	
-	private void printContents()
+	void printContents()
 	{
 		System.out.println("RESERVATION STATION " + total);
 
@@ -226,6 +226,46 @@ public class ReservationStation {
 			}
 		}
 	}
-	
+
+	// Takes a branch value, flushes any value within it
+	public void flush (int br)
+	{
+		// Flush the EU
+		eu.flush(br);
+		// Remove records from buffer
+		int i = 0;
+		int j = 0;
+		int rm = 0;
+		while (i < total)
+		{
+			int pos = next + i;
+			pos = pos % total;
+			System.out.println(instructBuffer[pos][0]);
+			boolean clearing = (branch[pos] == br);
+			if (clearing)
+			{
+				j++;
+				//total--;
+				System.out.println("PURGING");
+				rm++;
+			}
+			int pos2 = next + j;
+			pos2 = pos2 % total;
+
+			instructBuffer[pos] = instructBuffer[pos2];
+			branch[pos] = branch[pos2];
+			robLoc[pos] = robLoc[pos2];
+			available[pos] = available[pos2];
+
+			if (!clearing)
+			{
+				i++;
+				j++;
+			}
+
+		}
+		total -= rm;
+	}
+
 	
 }
