@@ -4,6 +4,26 @@ package com.CompArch;
 
 public class BranchController {
 	
+	private class BranchRecord{
+		int id;
+		int [] instruct;
+		boolean taken;
+		int PC;
+		public BranchRecord(int in, int [] instruction, boolean take) {
+			id = in;
+			instruct = instruction;
+			taken = take;
+			PC = sim.PC;
+		}
+
+		public String toString() {
+			return "ID: " + id + ", Instruction: " + instruct[0] + " "
+					+ instruct[1] + " " + instruct[2] + " " + instruct[3] 
+							+ ", Taken: " + taken + ", PC: " + PC + "\n";
+		}
+	}
+
+	
 	Simulator sim;
 	
 	int out;
