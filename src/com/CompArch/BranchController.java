@@ -27,31 +27,31 @@ public class BranchController {
 					+ instruct[1] + " " + instruct[2] + " " + instruct[3] + ", busy");
 			return;
 		}
-		/*System.out.println("Before: " + instruct[0] + " " +
+		System.out.println("Before: " + instruct[0] + " " +
 				instruct[1] + " " + instruct[2] + 
-				" " + instruct[3]);*/
+				" " + instruct[3]);
 		int[] renamed = sim.regRename(instruct);
-		/*System.out.println("After: " + renamed[0] + " " +
+		System.out.println("After: " + renamed[0] + " " +
 				renamed[1] + " " + renamed[2] + 
-				" " + renamed[3]);*/
+				" " + renamed[3]);
 		
 		// Calculate the result based on the command number
 		switch (renamed[0]) {
 		case 17:
 			if (sim.regFile.get(renamed[1]) == sim.regFile.get(renamed[2])) {
 				free = false;
-				out = sim.PC + renamed[3];
+				out = renamed[3];
 			}
 			break;
 		case 18:
 			if (sim.regFile.get(renamed[1]) != sim.regFile.get(renamed[2])) {
 				free = false;
-				out = sim.PC + renamed[3];
+				out = renamed[3];
 			}
 			break;
 		case 19:
 			free = false;
-			out = sim.PC + renamed[1];
+			out = renamed[1];
 			break;
 		default:
 			System.out.println("Branch Controller: Invalid instruction: " + renamed[0]);
@@ -64,7 +64,8 @@ public class BranchController {
 	{
 		if (free)
 			return;
-		sim.PC = out;
+		sim.PC += out;
+		out = 0;
 		free = true;
 	}
 

@@ -59,6 +59,9 @@ public class ReservationStation {
 			return false;
 		}
 		
+		System.out.println("Before: " + instruct[0] + " " + instruct[1] 
+				+ " " + instruct[2] + " " + instruct[3]);
+		
 		total++;
 		
 		// Where to add instruction in buffer
@@ -77,8 +80,7 @@ public class ReservationStation {
 		isOverwrite = isOverwrite || (!isIm
 				&& instruct[0] > 2 && instruct[0] < 17 
 				&& (instruct[1] == instruct[2] ||
-				instruct[1] == instruct[3]));
-		
+				instruct[1] == instruct[3]));		
 		
 		// If the operation is self writing
 		boolean isSelfWrite = instruct[1] == instruct[2];
@@ -87,33 +89,29 @@ public class ReservationStation {
 		
 		int overWrite = -1;
 		
-		if (isOverwrite && sim.rrt.assigned(instruct[1]))
-		{
-				//System.out.println("REGISTER " + instruct[1]);
-				overWrite = sim.rrt.getReg(instruct[1]);
-				//System.out.println("OVERWRITING: " + overWrite);
-				int new1 = sim.rrt.newReg(instruct[1]);
-				//System.out.println("WITH: " + new1 + ":" + sim.rrt.getReg(instruct[1]));
-		}
-				
+		int new1 = instruct[1];
+		
 		int out[] = sim.regRename(instruct);
 		
-		if (isSelfWrite && !(isOverwrite && sim.rrt.assigned(instruct[1])))
+		
+		if (isSelfWrite  || (isOverwrite && sim.rrt.assigned(instruct[1])))
 		{
 			overWrite = out[1];
 			out[1] = sim.rrt.newReg(instruct[1]);
 		}
+		System.out.println(isOverwrite);
+		System.out.println(isSelfWrite);
+		System.out.println(sim.rrt.assigned(instruct[1]));
+
+		
+		System.out.println("New val:" + out[0] + " " + out[1] + " " + out[2] + " " + out[3]);
+
 		
 		if (out[0] < 17)
 		{
-			System.out.println("New val:" + out[0] + " " + out[1] + " " + out[2] + " " + out[3]);
 			sim.regFile.issue(out[1]);
 		}
 		
-		
-		if (instruct[0] == 2)
-			System.out.println("WRITING " + out[1] + " val(" + sim.regFile.get(out[1]) + ") OUT TO " + out[2]);
-
 		// Write to instruction buffer
 		instructBuffer[dest] = out;
 		
@@ -177,7 +175,7 @@ public class ReservationStation {
 				depends = true;
 				//System.out.println("Waiting on: " + instruct[2]);
 			}
-		
+
 		if (eu.isFree() && total > 0 && !depends)
 		{
 			

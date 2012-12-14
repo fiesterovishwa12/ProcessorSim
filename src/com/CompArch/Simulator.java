@@ -47,7 +47,7 @@ public class Simulator {
 		//System.out.println("Launching simulator");
 		//System.out.println("Running program");
 
-		Simulator sim = new Simulator(100,100,200,1);
+		Simulator sim = new Simulator(100,100,200,2);
 
 		File file = new File(args[0]);
 
@@ -392,13 +392,23 @@ public class Simulator {
 				next = fetch(instructMem[PC]);
 				boolean isIAU = (instructMem[PC][0] < 17 && instructMem[PC][0] > 2);
 				if (next)
+				{
 					PC++;
+				}
 				else
+				{
+					//System.out.println("NO TO " + instructMem[PC][0]);
 					break;
+				}
 				if (!isIAU)
+				{
+					//System.out.println("NOT IAU");
+					//System.out.println("PC: " + PC);
 					break;
+				}
 			}
 			tick();
+			//System.out.println("PC: " + PC);
 			rsFree = isRsFree();
 		}
 		System.out.println("Halting " + iauRS[0].isFree());

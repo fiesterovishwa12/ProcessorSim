@@ -10,8 +10,10 @@ Ld 0 4 0
 Ld 1 4 1
 // If reached end of list (marked by 0) break
 beq 1 10 ENDLOOP
+// Compare a and b
 cmp 2 0 1
 addim 3 10 1
+// if a <= b SKIP
 bneq 2 3 SKIP
 // Swap and increment swap count by 1
 write 0 4 1
