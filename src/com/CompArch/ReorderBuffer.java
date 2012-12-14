@@ -58,11 +58,13 @@ public class ReorderBuffer {
 	}
 	
 	/** insert an instruction into the reorder buffer, along with the register it is overwriting */
-	int insert (int[] instruction, int over)
+	int insert (int[] instruction, int over, int br)
 	{
 		instruct[head] = instruction[0];
 		
 		overWrite[head] = over;
+		
+		branch[head] = br;
 		
 		// Dest if branch operation
 		if (instruction[0] == 17 | instruction[0] == 18)
@@ -132,4 +134,5 @@ public class ReorderBuffer {
 		}
 	}
 
+	
 }

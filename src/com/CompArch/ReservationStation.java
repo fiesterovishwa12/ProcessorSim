@@ -121,7 +121,7 @@ public class ReservationStation {
 		branch[dest] = br;
 		
 		// Add instruction to the reorder buffer
-		robLoc[dest] = sim.rob.insert(out, overWrite);
+		robLoc[dest] = sim.rob.insert(out, overWrite,br);
 		
 		//printContents();
 
