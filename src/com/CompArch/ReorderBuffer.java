@@ -134,5 +134,11 @@ public class ReorderBuffer {
 		}
 	}
 
+	public void confirm(int id, int newId) {
+		for (int i = 0; i < branch.length; i++)
+			if (branch[i] == id)
+				branch[i] = newId;
+	}
+
 	
 }

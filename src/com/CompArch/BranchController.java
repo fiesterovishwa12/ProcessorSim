@@ -43,12 +43,20 @@ static class BranchRecord{
 	int cycles;
 		
 	// If Branch Controller is available
-	boolean free;
+	private boolean free;
 	
 	BranchController (Simulator s)
 	{
 		sim = s;
 		free = true;
+	}
+	
+	boolean isFree()
+	{
+		if (!free || buffer.size() > 0)
+			return false;
+		else
+			return true;
 	}
 
 	// Carry out the given command
@@ -85,11 +93,13 @@ static class BranchRecord{
 				tagged = true;
 				sim.branch = nextID;
 				nextID++;
-			}
-			if (sim.bp.branches(sim.PC, instruct))
-			{
-				// Run unconditionally
-				//out = renamed[3];
+
+				if (sim.bp.branches(sim.PC, instruct))
+				{
+					// Run unconditionally
+					//out = renamed[3];
+				}
+				//return true;
 			}
 
 			return false;
@@ -166,6 +176,7 @@ static class BranchRecord{
 			if (rec.taken == didRun(rec.instruct))
 			{
 				System.out.println("GOT IT RIGHT!!!!");
+				//sim.confirm(rec.id, rec.branch);
 			}
 			else
 			{
@@ -204,6 +215,19 @@ static class BranchRecord{
 			return true;
 		}
 		return false;
+	}
+
+	public void confirm(int id, int newId) {
+		int i = 0;
+		while (i < buffer.size())
+		{
+			if (buffer.get(i).branch == id)
+			{
+				buffer.get(i).branch = newId;
+			}
+			else
+				i++;
+		}
 	}
 
 }

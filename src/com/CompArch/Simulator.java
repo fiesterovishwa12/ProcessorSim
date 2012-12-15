@@ -386,7 +386,7 @@ public class Simulator {
 		// check if any reservation stations are free
 		boolean rsFree = isRsFree();
 		
-		while (instructMem[PC][0] != 0 || !rsFree || !bc.free || !rob.isFree()) {
+		while (instructMem[PC][0] != 0 || !rsFree || !bc.isFree() || !rob.isFree()) {
 			for (int i = 0; i < iauRS.length; i++)
 			{
 				boolean next = false;
@@ -448,9 +448,9 @@ public class Simulator {
 			iauRS[i].confirm(id,newId);
 		}
 		
-		//rob.flush(id);			
+		rob.confirm(id,newId);			
 		
-		//bc.flush(id);
+		bc.confirm(id, newId);
 	}
 
 	void testFlush ()
