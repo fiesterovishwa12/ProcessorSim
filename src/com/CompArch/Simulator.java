@@ -81,9 +81,9 @@ public class Simulator {
 		
 		//sim.testRegRename();
 		
-		sim.testFlush();
+		//sim.testFlush();
 		
-		/*
+		
 		System.out.println("BEFORE:\n");
 		
 		System.out.println("INSTRUCTIONS\n---------");
@@ -106,7 +106,7 @@ public class Simulator {
 		System.out.println("DATA\n---------");
 		sim.printData();
 		System.out.println("---------");
-		System.out.print("Total cycles: " + sim.cycleTotal);*/
+		System.out.print("Total cycles: " + sim.cycleTotal);
 	}
 	
 	void testRegRename()
