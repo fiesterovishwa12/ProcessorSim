@@ -156,4 +156,11 @@ public class IAU extends ExecutionUnit {
 	public void print() {
 		System.out.println(cycles);		
 	}
+
+	@Override
+	public void confirm(int br, int newVal) {
+		if (br == branch)
+			br = newVal;
+		
+	}
 }

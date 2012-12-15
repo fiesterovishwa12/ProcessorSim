@@ -427,17 +427,30 @@ public class Simulator {
 	void flush (int id)
 	{
 		System.out.println("FLUSHING: " + id);
-		cycleTotal++;
+		//cycleTotal++;
 		for (int i = 0; i < iauRS.length; i++)
 		{
 			//System.out.println("RS " + i);
-			iauRS[i].tick();
+			iauRS[i].flush(id);
 		}
 		
 		rob.flush(id);			
 		
 		bc.flush(id);
+	}
+	
+	void confirm (int id, int newId)
+	{
+		System.out.println("Confirming: " + id);
+		for (int i = 0; i < iauRS.length; i++)
+		{
+			//System.out.println("RS " + i);
+			iauRS[i].confirm(id,newId);
+		}
 		
+		//rob.flush(id);			
+		
+		//bc.flush(id);
 	}
 
 	void testFlush ()

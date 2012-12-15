@@ -24,4 +24,6 @@ public abstract class ExecutionUnit {
 		sim = s;
 	}
 
+	public abstract void confirm(int br,int newVal);
+
 }

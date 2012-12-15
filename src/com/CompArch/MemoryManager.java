@@ -67,6 +67,12 @@ public class MemoryManager extends ExecutionUnit{
 	public void print() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void confirm(int br, int newVal) {
+		// TODO Auto-generated method stub
+		
 	}	
 
 }

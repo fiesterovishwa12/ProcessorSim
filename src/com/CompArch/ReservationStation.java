@@ -270,6 +270,20 @@ public class ReservationStation {
 		}
 		total -= rm;
 	}
+	
+	// Takes a branch value, confirms any value within it
+		public void confirm (int br, int newID)
+		{
+			// Flush the EU
+			eu.confirm(br, newID);
+			// Update records in buffer
+			int rm = 0;
+			for (int i = 0; i < branch.length; i++)
+			{
+				if (branch[i] == br);
+					branch[i] = newID;
+			}
+		}
 
 	
 }
