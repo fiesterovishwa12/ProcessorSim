@@ -384,7 +384,7 @@ public class Simulator {
 				boolean next = false;
 				next = fetch(instructMem[PC]);
 				System.out.println("AT " + i);
-				boolean isIAU = (/*instructMem[PC][0] < 17 &&*/ instructMem[PC][0] > 2);
+				boolean isIAU = (instructMem[PC][0] < 17 && instructMem[PC][0] > 2);
 				if (next)
 				{
 					PC++;
@@ -398,7 +398,7 @@ public class Simulator {
 				{
 					System.out.println("NOT IAU");
 					System.out.println("PC: " + PC);
-					break;
+					//break;
 				}
 			}
 			tick();
