@@ -419,6 +419,20 @@ public class Simulator {
 	{
 		return iauRS.length;
 	}
+	
+	void flush (int id)
+	{
+		cycleTotal++;
+		for (int i = 0; i < iauRS.length; i++)
+		{
+			//System.out.println("RS " + i);
+			iauRS[i].tick();
+		}
+		
+		rob.flush(id);			
+		
+		//bc.flush(id);
+	}
 
 	void testFlush ()
 	{

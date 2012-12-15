@@ -65,6 +65,10 @@ public class ReservationStation {
 			return false;
 		}
 		
+		// Memory access forbidden while predicting
+		//if (instruct[0] < 3 && br != -1) 
+			//return false;
+		
 		/*System.out.println("Before: " + instruct[0] + " " + instruct[1] 
 				+ " " + instruct[2] + " " + instruct[3]);*/
 		

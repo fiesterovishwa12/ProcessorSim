@@ -11,12 +11,14 @@ public class BranchController {
 		int [] instruct;
 		boolean taken;
 		int PC;
+		int branch;
 		
 		public BranchRecord(int in, int [] instruction, boolean take) {
 			id = in;
 			instruct = instruction;
 			taken = take;
 			PC = sim.PC;
+			branch = sim.branch;
 		}
 
 
@@ -169,6 +171,7 @@ public class BranchController {
 			{
 				System.out.println("GOT IT WRONG!!!!");
 			}
+			sim.branch = rec.branch;
 			System.out.println(buffer);
 			buffer.remove(0);
 		}
