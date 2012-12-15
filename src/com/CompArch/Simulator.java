@@ -89,9 +89,7 @@ public class Simulator {
 		sim.printData();
 		System.out.println("---------");
 		
-		
 		sim.run();
-		
 		
 		System.out.println("\nAFTER:\n");
 		
@@ -105,8 +103,6 @@ public class Simulator {
 		sim.printData();
 		System.out.println("---------");
 		System.out.print("Total cycles: " + sim.cycleTotal);
-		
-		
 	}
 	
 	void testRegRename()
@@ -326,6 +322,8 @@ public class Simulator {
 			// Handle branch
 			System.out.println("Branching :" + bp.branches(PC, instruct));
 			result = bc.read(instruct);
+			if (result)
+				bc.tick();
 		}
 		
 		if(result)
@@ -369,7 +367,7 @@ public class Simulator {
 		{
 			if (!memManRS[i].isFree())
 				result = false;
-			bc.tick();
+			//bc.tick();
 		}
 		return result;
 	}
@@ -386,7 +384,7 @@ public class Simulator {
 				boolean next = false;
 				next = fetch(instructMem[PC]);
 				System.out.println("AT " + i);
-				boolean isIAU = (instructMem[PC][0] < 17 && instructMem[PC][0] > 2);
+				boolean isIAU = (/*instructMem[PC][0] < 17 &&*/ instructMem[PC][0] > 2);
 				if (next)
 				{
 					PC++;
