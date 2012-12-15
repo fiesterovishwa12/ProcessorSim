@@ -25,7 +25,7 @@ static class BranchRecord{
 		public String toString() {
 			return "ID: " + id + ", Instruction: " + instruct[0] + " "
 					+ instruct[1] + " " + instruct[2] + " " + instruct[3] 
-							+ ", Taken: " + taken + ", PC: " + PC + "\n";
+							+ ", Taken: " + taken + ", PC: " + PC + " Branch: " + branch + "\n";
 		}
 	}
 	

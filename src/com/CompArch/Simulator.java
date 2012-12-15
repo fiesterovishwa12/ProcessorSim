@@ -479,24 +479,28 @@ public class Simulator {
 		rob.flush(1);
 		rob.printBuffer();
 		
+		branch = 7;
 		int [] instruct3 = {1, 2, 1, 1};
-		branch = -1;
 		BranchRecord dor = new BranchRecord(0, instruct3.clone(), true,this);
 		bc.buffer.add(dor);
+		
+		branch = -1;
 		instruct3[0] = 2;
 		dor = new BranchRecord(1, instruct3.clone(), true,this);
 		bc.buffer.add(dor);
-		branch = 1;
+		
+		branch = 0;
 		instruct3[0] = 3;
 		dor = new BranchRecord(2, instruct3.clone(), true,this);
-		branch = 2;
 		bc.buffer.add(dor);
+		
+		branch = -1;
 		instruct3[0] = 4;
 		dor = new BranchRecord(3, instruct3.clone(), true,this);
 		bc.buffer.add(dor);
 		
 		System.out.println(bc.buffer);
-		bc.flush(-1);
+		bc.flush(7);
 		System.out.println(bc.buffer);
 
 	}
