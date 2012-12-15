@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
+import com.CompArch.BranchController.BranchRecord;
+
 public class Simulator {
 	
 	BranchPredictor bp;
@@ -79,7 +81,9 @@ public class Simulator {
 		
 		//sim.testRegRename();
 		
+		sim.testFlush();
 		
+		/*
 		System.out.println("BEFORE:\n");
 		
 		System.out.println("INSTRUCTIONS\n---------");
@@ -102,7 +106,7 @@ public class Simulator {
 		System.out.println("DATA\n---------");
 		sim.printData();
 		System.out.println("---------");
-		System.out.print("Total cycles: " + sim.cycleTotal);
+		System.out.print("Total cycles: " + sim.cycleTotal);*/
 	}
 	
 	void testRegRename()
@@ -472,6 +476,27 @@ public class Simulator {
 		rob.printBuffer();
 		rob.flush(1);
 		rob.printBuffer();
+		
+		int [] instruct3 = {1, 2, 1, 1};
+		branch = -1;
+		BranchRecord dor = new BranchRecord(0, instruct3.clone(), true,this);
+		bc.buffer.add(dor);
+		branch = 1;
+		instruct3[0] = 2;
+		dor = new BranchRecord(0, instruct3.clone(), true,this);
+		bc.buffer.add(dor);
+		branch = -1;
+		instruct3[0] = 3;
+		dor = new BranchRecord(0, instruct3.clone(), true,this);
+		bc.buffer.add(dor);
+		instruct3[0] = 4;
+		dor = new BranchRecord(0, instruct3.clone(), true,this);
+		bc.buffer.add(dor);
+		
+		System.out.println(bc.buffer);
+		bc.flush(-1);
+		System.out.println(bc.buffer);
+
 	}
 
 

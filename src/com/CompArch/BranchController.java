@@ -6,14 +6,14 @@ import java.util.LinkedList;
 
 public class BranchController {
 	
-	private class BranchRecord{
+static class BranchRecord{
 		int id;
 		int [] instruct;
 		boolean taken;
 		int PC;
 		int branch;
 		
-		public BranchRecord(int in, int [] instruction, boolean take) {
+		public BranchRecord(int in, int [] instruction, boolean take, Simulator sim) {
 			id = in;
 			instruct = instruction;
 			taken = take;
@@ -81,7 +81,7 @@ public class BranchController {
 				
 			if (!tagged )
 			{
-				buffer.add(new BranchRecord(nextID, renamed,sim.bp.branches(sim.PC, instruct)));
+				buffer.add(new BranchRecord(nextID, renamed,sim.bp.branches(sim.PC, instruct),sim));
 				tagged = true;
 				sim.branch = nextID;
 				nextID++;
@@ -174,6 +174,18 @@ public class BranchController {
 			sim.branch = rec.branch;
 			System.out.println(buffer);
 			buffer.remove(0);
+		}
+	}
+	
+	void flush (int id)
+	{
+		int i = 0;
+		while (i < buffer.size())
+		{
+			if (buffer.get(i).branch == id)
+				buffer.remove(i);
+			else
+				i++;
 		}
 	}
 	
