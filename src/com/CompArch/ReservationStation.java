@@ -106,7 +106,7 @@ public class ReservationStation {
 			out[1] = sim.rrt.newReg(instruct[1]);
 		}
 		
-		System.out.println("New val:" + out[0] + " " + out[1] + " " + out[2] + " " + out[3]);
+		//System.out.println("New val:" + out[0] + " " + out[1] + " " + out[2] + " " + out[3]);
 
 		
 		if (out[0] < 17)

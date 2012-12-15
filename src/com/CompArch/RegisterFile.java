@@ -21,8 +21,8 @@ public class RegisterFile {
 	// Set the register at index i to val
 	public void set(int i, int val)
 	{
-		System.out.println("Freeing  " + i);
-		System.out.println("Val  " + val);
+		//System.out.println("Freeing  " + i);
+		//System.out.println("Val  " + val);
 		scoreboard[i] = true;
 		reg[i] = val;
 		if (maxReg < i)
@@ -31,7 +31,7 @@ public class RegisterFile {
 	
 	public void issue(int i)
 	{
-		System.out.println("Locking " + i);
+		//System.out.println("Locking " + i);
 		scoreboard[i] = false;
 	}
 	

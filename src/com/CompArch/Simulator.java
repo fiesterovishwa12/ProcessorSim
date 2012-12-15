@@ -187,7 +187,7 @@ public class Simulator {
 		for (int i = 0; i < memManRS.length; i++)
 			memManRS[i].tick();
 		
-		//bc.tick();
+		bc.tick();
 		rob.tick();
 	}
 	
@@ -292,6 +292,10 @@ public class Simulator {
 	boolean fetch(int[] instruct) {
 		boolean result;
 		
+		// HALT
+		if (instruct[0] == 0)
+			return false;
+		
 		// Log the maximum written to register
 		if (instruct[1] > maxReg && instruct[0] > 0 && instruct[0] < 19)
 			maxReg = instruct[1];
@@ -320,15 +324,15 @@ public class Simulator {
 		}
 		else {
 			// Handle branch
-			System.out.println("Branching :" + bp.branches(PC, instruct));
+			//System.out.println("Branching :" + bp.branches(PC, instruct));
 			result = bc.read(instruct);
 			if (result)
-				bc.tick();
+				bc.run();
 		}
 		
-		if(result)
+/*		if(result)
 			System.out.println("Doing: " + instruct[0] + " " + instruct[1] 
-					+ " " + instruct[2] + " " + instruct[3]);
+					+ " " + instruct[2] + " " + instruct[3]);*/
 		
 		return result;
 	}	
@@ -383,10 +387,11 @@ public class Simulator {
 			{
 				boolean next = false;
 				next = fetch(instructMem[PC]);
-				System.out.println("AT " + i);
-				boolean isIAU = (instructMem[PC][0] < 17 && instructMem[PC][0] > 2);
+				//System.out.println("AT " + i);
+				//boolean isIAU = (instructMem[PC][0] < 17 && instructMem[PC][0] > 2);
 				if (next)
 				{
+					System.out.println("BR: " + branch);
 					PC++;
 				}
 				else
@@ -394,18 +399,20 @@ public class Simulator {
 					//System.out.println("NO TO " + instructMem[PC][0]);
 					break;
 				}
-				if (!isIAU)
+				/*if (!isIAU)
 				{
 					System.out.println("NOT IAU");
 					System.out.println("PC: " + PC);
 					//break;
-				}
+				}*/
 			}
 			tick();
 			//System.out.println("PC: " + PC);
 			rsFree = isRsFree();
 		}
 		//System.out.println("Halting " + iauRS[0].isFree());
+		System.out.println("BC");
+		System.out.println(bc.buffer);
 	}
 
 	int getNWay()
