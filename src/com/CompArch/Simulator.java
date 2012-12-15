@@ -426,6 +426,7 @@ public class Simulator {
 	
 	void flush (int id)
 	{
+		System.out.println("FLUSHING: " + id);
 		cycleTotal++;
 		for (int i = 0; i < iauRS.length; i++)
 		{
@@ -435,7 +436,8 @@ public class Simulator {
 		
 		rob.flush(id);			
 		
-		//bc.flush(id);
+		bc.flush(id);
+		
 	}
 
 	void testFlush ()
@@ -481,16 +483,16 @@ public class Simulator {
 		branch = -1;
 		BranchRecord dor = new BranchRecord(0, instruct3.clone(), true,this);
 		bc.buffer.add(dor);
-		branch = 1;
 		instruct3[0] = 2;
-		dor = new BranchRecord(0, instruct3.clone(), true,this);
+		dor = new BranchRecord(1, instruct3.clone(), true,this);
 		bc.buffer.add(dor);
-		branch = -1;
+		branch = 1;
 		instruct3[0] = 3;
-		dor = new BranchRecord(0, instruct3.clone(), true,this);
+		dor = new BranchRecord(2, instruct3.clone(), true,this);
+		branch = 2;
 		bc.buffer.add(dor);
 		instruct3[0] = 4;
-		dor = new BranchRecord(0, instruct3.clone(), true,this);
+		dor = new BranchRecord(3, instruct3.clone(), true,this);
 		bc.buffer.add(dor);
 		
 		System.out.println(bc.buffer);

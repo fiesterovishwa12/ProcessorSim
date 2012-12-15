@@ -170,6 +170,10 @@ static class BranchRecord{
 			else
 			{
 				System.out.println("GOT IT WRONG!!!!");
+				sim.flush(rec.id);
+				sim.PC = rec.PC;
+				if (didRun(rec.instruct))
+					sim.PC += rec.instruct[3];
 			}
 			sim.branch = rec.branch;
 			System.out.println(buffer);
@@ -183,7 +187,10 @@ static class BranchRecord{
 		while (i < buffer.size())
 		{
 			if (buffer.get(i).branch == id)
+			{
+				sim.flush(buffer.get(i).id);
 				buffer.remove(i);
+			}
 			else
 				i++;
 		}
